@@ -90,6 +90,28 @@ For complete API documentation, see [API.md](API.md).
 - **Backend**: Express.js + sql.js (pure JS SQLite)
 - **Database**: SQLite file (persisted via Docker volume)
 
+## Project Structure
+
+```
+nixboard/
+├── API.md              # API reference
+├── CHANGELOG.md        # Version history
+├── CONTRIBUTING.md      # Contribution guidelines
+├── MAKINGOF.md         # Build notes
+├── OPENSOURCE.md        # Release notes
+├── README.md           # This file
+├── docker-compose.yml  # Container orchestration
+├── index.html         # Frontend (Vue.js)
+├── index.js           # Backend (Express + SQLite)
+├── package.json       # Dependencies
+├── scripts/           # Utility scripts
+│   └── migrate.js
+├── test/              # Test suites
+│   ├── api.test.js
+│   └── smoke.js
+└── data/              # SQLite database (gitignored)
+```
+
 ## n8n Integration
 
 Example webhook payload for creating a card:
