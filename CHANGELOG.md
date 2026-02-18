@@ -1,5 +1,21 @@
 # Changelog - NixBoard
 
+## [0.6.0] - 2026-02-18 - Darth Mode Release
+
+### Added
+- **Darth Mode Theme** - Dark theme with red accents
+  - Black/deep purple gradient background
+  - Red glow effects
+  - Red tagline "I find your lack of faith disturbing"
+- **Due Dates** - Date field for cards with color coding
+  - Green: not due yet
+  - Yellow: due today
+  - Red: overdue
+- **Quick Delete** - Trash icon on cards (visible on hover)
+  - Delete requires confirmation
+
+---
+
 ## [0.5.0] - 2026-02-18 - Beta Release
 
 ### Added

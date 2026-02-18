@@ -7,7 +7,7 @@ services:
     container_name: kanban-frontend
     restart: always
     volumes:
-      - ./frontend:/usr/share/nginx/html:ro
+      - .:/usr/share/nginx/html:ro
     ports:
       - "3035:80"
     networks:
