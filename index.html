@@ -132,8 +132,8 @@
     }
     .card-code { font-size: 10px; font-weight: bold; color: #888; letter-spacing: 1px; margin-bottom: 2px; }
     .card-title { font-size: 14px; margin-bottom: 4px; }
-    .card-delete { position: absolute; top: 4px; right: 4px; background: none; border: none; cursor: pointer; opacity: 0; font-size: 12px; transition: opacity 0.2s; }
-    .card:hover .card-delete { opacity: 0.5; }
+    .card-delete { position: absolute; top: 4px; right: 4px; background: none; border: none; cursor: pointer; opacity: 0; font-size: 16px; font-weight: bold; color: #ef4444; transition: opacity 0.2s; z-index: 10; }
+    .card:hover .card-delete { opacity: 0.7; }
     .card-delete:hover { opacity: 1 !important; }
     .card-desc { font-size: 12px; color: #666; }
     .card-assigned { font-size: 11px; color: #3b82f6; margin-top: 4px; }
@@ -228,7 +228,7 @@
           <div class="card" v-for="card in lane.cards" :key="card.id" :data-id="card.id" @click="editCard(card)">
             <div class="card-code" v-if="card.code">{{ card.code }}</div>
             <div class="card-title">{{ card.title }}</div>
-            <button class="card-delete" @click.stop="deleteCard(card.id)" title="Delete">🗑️</button>
+            <button class="card-delete" @click.stop="deleteCard(card.id)" title="Delete">✕</button>
             <div class="card-desc" v-if="card.description">{{ card.description }}</div>
             <div class="card-assigned" v-if="card.assigned_to">👤 {{ card.assigned_to }}</div>
             <div class="card-subtasks" v-if="card.subtasks?.length">
