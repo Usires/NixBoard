@@ -20,13 +20,13 @@ services:
     restart: always
     working_dir: /app
     volumes:
-      - ./backend:/app
+      - .:/app
     ports:
       - "3036:3000"
     environment:
       - NODE_ENV=production
       - PORT=3000
-    command: sh -c "npm install && mkdir -p data && node src/index.js"
+    command: sh -c "npm install && mkdir -p data && node index.js"
     networks:
       - kanban-net
     depends_on:

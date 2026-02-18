@@ -161,7 +161,7 @@ async function initDb() {
     db.run("INSERT INTO boards (name) VALUES (?)", [CONFIG.BOARD_NAME]);
     const boardId = db.exec("SELECT last_insert_rowid() as id")[0].values[0][0];
     
-    DEFAULT_LANES.forEach((title, idx) => {
+    CONFIG.DEFAULT_LANES.forEach((title, idx) => {
       const laneId = title.toLowerCase().replace(/\s+/g, '-');
       db.run('INSERT INTO lanes (id, board_id, title, position) VALUES (?, ?, ?, ?)', 
         [laneId, boardId, title, idx]);
