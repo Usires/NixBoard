@@ -50,7 +50,7 @@ npm test
 |----------|---------|-------------|
 | `PORT` | `3000` | Backend API port |
 | `DB_PATH` | `/app/data/kanban.db` | SQLite database path |
-| `CORS_ORIGIN` | `*` | Allowed CORS origins |
+| `CORS_ORIGIN` | `*` | Allowed CORS origins (default `*` fine for self-hosted; restrict for production) |
 | `BOARD_NAME` | `My Project Board` | Default board name |
 
 ### Reverse Proxy (nginx)

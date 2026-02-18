@@ -89,6 +89,9 @@ const validateRequired = (data, required) => {
 const app = express();
 
 // Configure CORS
+// NOTE: Default '*' is fine for self-hosted home lab use (no auth, local network).
+// For production exposed to the web, set CORS_ORIGIN env var to your domain.
+// When accessed via nginx reverse proxy, CORS doesn't matter (browser only talks to nginx).
 const corsOptions = {
   origin: process.env.CORS_ORIGIN || '*',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
