@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanban Board</title>
+  <script>
+    // Configuration - can be overridden via window.kanbanConfig
+    window.kanbanConfig = {
+      boardTitle: 'My Project Board',
+      apiBase: ''
+    };
+  </script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script src="https://unpkg.com/@vueuse/core"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    #app { padding: 20px; padding-top: 80px; width: 100%; max-width: 1400px; position: relative; }
+    .board-title-box { 
+      position: sticky; 
+      top: 0; 
+      z-index: 60;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1 { color: #333; display: flex; align-items: center; gap: 12px; }
+    .board-title-input { font-size: 24px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; }
+    .edit-title-btn { background: none; border: none; cursor: pointer; font-size: 18px; opacity: 0.5; }
+    .edit-title-btn:hover { opacity: 1; }
+    .theme-buttons { display: flex; gap: 4px; }
+    .theme-btn { background: none; border: 1px solid #ddd; padding: 4px 6px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .theme-btn:hover { transform: scale(1.1); }
+    .chrome-btn { background: linear-gradient(90deg, #8B0000, #FF4500, #FFD700) !important; border-color: #FFD700 !important; color: white; font-weight: bold; }
+    .darth-btn { background: #1a1a2e !important; border-color: #ff3333 !important; color: #ff3333 !important; }
+    
+    /* DeLorean pixel animation */
+    .delorean {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      font-size: 20px;
+      z-index: 100;
+      display: none;
+      animation: driveLeft 4s linear forwards;
+    }
+    .delorean.driving { display: block; }
+    @keyframes driveLeft {
+      0% { right: -100px; opacity: 1; }
+      70% { right: calc(100% - 100px); opacity: 1; }
+      85% { right: calc(100% - 80px); opacity: 1; }
+      100% { right: calc(100% + 50px); opacity: 0; }
+    }
+    .delorean-flash {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: white; opacity: 0; pointer-events: none; z-index: 9999;
+    }
+    .delorean-flash.flash { animation: timeFlash 0.8s ease-out; }
+    @keyframes timeFlash {
+      0% { opacity: 0; }
+      20% { opacity: 0.9; }
+      100% { opacity: 0; }
+    }
+    .lane-titles-box { 
+      position: sticky; 
+      top: 80px; 
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: center;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .sticky-lanes { display: flex; gap: 16px; width: 100%; max-width: 1184px; }
+    .sticky-lane-header { flex: 1; min-width: 280px; padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; text-align: center; }
+    .sticky-lane-header.lane-backlog { background: #dbeafe; color: #1e40af; }
+    .sticky-lane-header.lane-in-progress { background: #fef3c7; color: #92400e; }
+    .sticky-lane-header.lane-done { background: #dcfce7; color: #166534; }
+    .sticky-lane-header.lane-blocked { background: #fee2e2; color: #991b1b; }
+    .board { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 20px; flex: 1; max-width: 1184px; margin: 0 auto; }
+    .lane {
+      background: #fff; border-radius: 8px; min-width: 280px; flex: 1;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; flex-direction: column;
+      position: relative;
+    }
+    .lane { padding-top: 0; }
+    .lane-cards { padding: 12px; flex: 1; min-height: 100px; }
+    .card {
+      background: #fff; border-radius: 6px; padding: 12px; margin-bottom: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08); cursor: pointer; transition: box-shadow 0.2s;
+    }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .card.ghost { opacity: 0.4; background: #e0e7ff; }
+    .card.drag { cursor: grabbing; }
+    .card.just-dropped { animation: glowPulse 1.5s ease-out; }
+    @keyframes glowPulse {
+      0% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+      50% { box-shadow: 0 0 20px 5px rgba(102, 126, 234, 0.5); }
+      100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0); }
+    }
+    .card-code { font-size: 10px; font-weight: bold; color: #888; letter-spacing: 1px; margin-bottom: 2px; }
+    .card-title { font-size: 14px; margin-bottom: 4px; }
+    .card-delete { position: absolute; top: 4px; right: 4px; background: none; border: none; cursor: pointer; opacity: 0; font-size: 12px; transition: opacity 0.2s; }
+    .card:hover .card-delete { opacity: 0.5; }
+    .card-delete:hover { opacity: 1 !important; }
+    .card-desc { font-size: 12px; color: #666; }
+    .card-assigned { font-size: 11px; color: #3b82f6; margin-top: 4px; }
+    .card-subtasks { font-size: 11px; color: #10b981; margin-top: 4px; }
+    .card-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+    .card-due { font-size: 11px; margin-top: 4px; padding: 2px 6px; border-radius: 3px; display: inline-block; }
+    .card-due.due-ok { background: #dcfce7; color: #166534; }
+    .card-due.due-soon { background: #fef9c3; color: #854d0e; }
+    .card-due.due-overdue { background: #fee2e2; color: #991b1b; }
+    .card-tag { font-size: 10px; padding: 2px 6px; background: #e5e7eb; border-radius: 4px; color: #374151; }
+    .card-color { width: 100%; height: 4px; border-radius: 2px; margin-top: 8px; }
+    .add-card-btn {
+      width: 100%; padding: 10px; border: none; background: transparent;
+      color: #666; cursor: pointer; text-align: left; font-size: 14px;
+    }
+    .add-card-btn:hover { color: #333; }
+    .footer { text-align: center; padding: 20px; color: #999; font-size: 12px; }
+    .footer .tagline { font-size: 11px; color: #666; margin-top: 4px; }
+    .footer span { color: #3b82f6; }
+    .theme-btn { background: none; border: 1px solid #ddd; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; margin: 0 4px; }
+    .loading { position: fixed; top: 10px; right: 10px; background: #3b82f6; color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; z-index: 1000; }
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center; z-index: 100;
+    }
+    .modal { background: #fff; border-radius: 12px; padding: 24px; width: 400px; max-width: 90vw; }
+    .modal h2 { margin-bottom: 16px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;
+    }
+    .color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+    .code-input-row { display: flex; gap: 8px; align-items: center; }
+    .code-field { width: 80px; }
+    .code-regen-btn { background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 14px; }
+    .code-regen-btn:hover { background: #e0e0e0; }
+    .due-date-input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; width: 150px; }
+    .color-option {
+      width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent;
+    }
+    .color-option.selected { border-color: #333; }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+    .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; }
+    .btn-primary { background: #3b82f6; color: #fff; }
+    .btn-secondary { background: #e5e5e5; color: #333; }
+    .btn-danger { background: #ef4444; color: #fff; }
+    .btn-sm { padding: 4px 8px; font-size: 12px; }
+    .subtasks { margin-top: 16px; border-top: 1px solid #eee; padding-top: 12px; }
+    .subtask { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+    .subtask input[type="checkbox"] { width: auto; }
+    .subtask-title { flex: 1; font-size: 14px; }
+    .subtask-title.done { text-decoration: line-through; color: #999; }
+    .subtask-delete { color: #ef4444; cursor: pointer; font-size: 18px; }
+    .add-subtask { display: flex; gap: 8px; margin-top: 8px; }
+    .add-subtask input { flex: 1; padding: 6px 10px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="delorean-flash" :class="{ flash: showDeloreanFlash }"></div>
+    <div class="delorean" :class="{ driving: showDelorean }">🚗💨</div>
+    <div class="loading" v-if="loading">Loading...</div>
+    <div class="board-title-box">
+      <h1 v-if="!editingTitle">📋 {{ boardTitle }} <button class="edit-title-btn" @click="startEditTitle">✏️</button></h1>
+      <input v-else class="board-title-input" v-model="newTitle" @keyup.enter="saveTitle" @blur="saveTitle" ref="titleInput" />
+      <div class="theme-buttons">
+        <button class="theme-btn" @click="setTheme('purple')">🌌</button>
+        <button class="theme-btn" @click="setTheme('ocean')">🌊</button>
+        <button class="theme-btn" @click="setTheme('sunset')">🌅</button>
+        <button class="theme-btn" @click="setTheme('forest')">🌲</button>
+        <button class="theme-btn" @click="setTheme('fire')">🔥</button>
+        <button class="theme-btn" @click="setTheme('ashes')">💨</button>
+        <button class="theme-btn chrome-btn" @click="setTheme('chrome')">⚡</button>
+        <button class="theme-btn darth-btn" @click="setTheme('darth')">🎭</button>
+      </div>
+    </div>
+    <div class="lane-titles-box">
+      <div class="sticky-lanes">
+        <div class="sticky-lane-header" :class="'lane-' + lane.id" v-for="lane in board.lanes" :key="lane.id">
+          {{ lane.title }}
+        </div>
+      </div>
+    </div>
+    <div class="board">
+      <div class="lane" v-for="lane in board.lanes" :key="lane.id">
+        <div class="lane-cards" :data-lane-id="lane.id">
+          <div class="card" v-for="card in lane.cards" :key="card.id" :data-id="card.id" @click="editCard(card)">
+            <div class="card-code" v-if="card.code">{{ card.code }}</div>
+            <div class="card-title">{{ card.title }}</div>
+            <button class="card-delete" @click.stop="deleteCard(card.id)" title="Delete">🗑️</button>
+            <div class="card-desc" v-if="card.description">{{ card.description }}</div>
+            <div class="card-assigned" v-if="card.assigned_to">👤 {{ card.assigned_to }}</div>
+            <div class="card-subtasks" v-if="card.subtasks?.length">
+              ☑️ {{ card.subtasks.filter(s => s.done).length }}/{{ card.subtasks.length }}
+            </div>
+            <div class="card-tags" v-if="card.tags">
+              <span class="card-tag" v-for="tag in card.tags.split(',')" :key="tag">{{ tag.trim() }}</span>
+            </div>
+            <div class="card-due" v-if="card.due_date" :class="getDueClass(card.due_date)">📅 {{ formatDue(card.due_date) }}</div>
+            <div class="card-color" :style="{ background: card.color }"></div>
+          </div>
+          <button class="add-card-btn" @click="openAddCard(lane.id)">+ Add card</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" v-if="showModal" @click.self="closeModal">
+      <div class="modal">
+        <h2>{{ editingCard ? 'Edit Card' : 'New Card' }}</h2>
+        <div class="form-group">
+          <label>Title</label>
+          <input v-model="form.title" placeholder="Task name" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea v-model="form.description" rows="3" placeholder="Optional details"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Code (4 letters)</label>
+          <div class="code-input-row">
+            <input v-model="form.code" placeholder="FROG" maxlength="4" class="code-field" style="text-transform: uppercase" />
+            <button type="button" class="code-regen-btn" @click="async () => form.code = await generateNewCode()" title="Generate new code">🔄</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Due Date</label>
+          <input type="date" v-model="form.due_date" class="due-date-input" />
+        </div>
+        <div class="form-group">
+          <label>Assigned to</label>
+          <input v-model="form.assigned_to" placeholder="Who is working on this?" />
+        </div>
+        <div class="form-group">
+          <label>Color</label>
+          <div class="color-picker">
+            <div v-for="c in colors" :key="c"
+                 class="color-option"
+                 :class="{ selected: form.color === c }"
+                 :style="{ background: c }"
+                 @click="form.color = c"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tags (comma separated)</label>
+          <input v-model="form.tags" placeholder="e.g. bug, feature, urgent" />
+        </div>
+        
+        <!-- Subtasks Section -->
+        <div class="subtasks" v-if="editingCard">
+          <label>Subtasks</label>
+          <div class="subtask" v-for="st in editingCard.subtasks" :key="st.id">
+            <input type="checkbox" :checked="st.done" @change="toggleSubtask(st)" />
+            <span class="subtask-title" :class="{ done: st.done }">{{ st.title }}</span>
+            <span class="subtask-delete" @click="deleteSubtask(st)">&times;</span>
+          </div>
+          <div class="add-subtask">
+            <input v-model="newSubtask" placeholder="Add subtask..." @keyup.enter="addSubtask" />
+            <button class="btn btn-sm btn-secondary" @click="addSubtask">Add</button>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <button class="btn btn-danger" v-if="editingCard" @click="deleteCard">Delete</button>
+          <button class="btn btn-secondary" @click="closeModal">Cancel</button>
+          <button class="btn btn-primary" @click="saveCard">{{ editingCard ? 'Save' : 'Add' }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      Built with <span>❤️</span> by <strong>Nix</strong> & <strong>Dirk</strong> 🐧<br>
+      <div class="tagline">Vue.js + Express + SQLite • Docker • Self-hosted</div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, reactive, onMounted, nextTick } = Vue;
+    const config = window.kanbanConfig || {};
+
+    const themes = {
+      purple: { bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)', tagline: '#e0e0e0', header: 'rgba(102, 126, 234, 0.15)', glow: '102, 126, 234' },
+      ocean: { bg: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%)', tagline: '#e0e0e0', header: 'rgba(30, 60, 114, 0.2)', glow: '30, 60, 114' },
+      sunset: { bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', tagline: '#555', header: 'rgba(250, 112, 154, 0.15)', glow: '250, 112, 154' },
+      forest: { bg: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)', tagline: '#e0e0e0', header: 'rgba(19, 78, 94, 0.2)', glow: '19, 78, 94' },
+      fire: { bg: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)', tagline: '#ffe0b2', header: 'rgba(241, 39, 17, 0.15)', glow: '241, 39, 17' },
+      ashes: { bg: 'linear-gradient(135deg, #3c3c3c 0%, #8a8a8a 100%)', tagline: '#ccc', header: 'rgba(60, 60, 60, 0.2)', glow: '60, 60, 60' },
+      chrome: { bg: 'linear-gradient(135deg, #8B0000 0%, #b22222 25%, #dc143c 50%, #ff4500 75%, #8B0000 100%)', tagline: '#fff', header: 'rgba(139, 0, 0, 0.4)', glow: '255, 69, 0' },
+      darth: { bg: 'linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1a 100%)', tagline: '#ff3333', header: 'rgba(20, 20, 30, 0.8)', glow: '255, 51, 51', cardBg: 'rgba(30, 30, 40, 0.9)', text: '#e0e0e0' }
+    };
+
+    // Card code words - loaded from API endpoint /api/generate-code
+    // (stored only in backend for DRY principle)
+    const generateNewCode = async () => {
+      const data = await api('/api/generate-code');
+      return data.code;
+    };
+    
+    // Format due date for display
+    const formatDue = (dateStr) => {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const dueDay = new Date(date);
+      dueDay.setHours(0,0,0,0);
+      const diff = Math.ceil((dueDay - today) / (1000 * 60 * 60 * 24));
+      if (diff < 0) return 'Overdue';
+      if (diff === 0) return 'Today';
+      if (diff === 1) return 'Tomorrow';
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    };
+    
+    // Get CSS class based on due date
+    const getDueClass = (dateStr) => {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const dueDay = new Date(date);
+      dueDay.setHours(0,0,0,0);
+      const diff = Math.ceil((dueDay - today) / (1000 * 60 * 60 * 24));
+      if (diff < 0) return 'due-overdue';
+      if (diff <= 1) return 'due-soon';
+      return 'due-ok';
+    };
+
+    const currentTheme = ref(localStorage.getItem('kanban-theme') || 'purple');
+    const theme = themes[currentTheme.value];
+    document.body.style.background = theme.bg;
+    document.body.style.backgroundSize = '400% 400%';
+    document.body.style.animation = 'gradientBG 15s ease infinite';
+
+    createApp({
+      setup() {
+        const boardTitle = ref(config.boardTitle || 'My Project Board');
+        const editingTitle = ref(false);
+        const newTitle = ref('');
+        const titleInput = ref(null);
+        const board = reactive({ lanes: [] });
+        const loading = ref(false);
+        const showDelorean = ref(false);
+        const showDeloreanFlash = ref(false);
+        const showModal = ref(false);
+        const editingCard = ref(null);
+        const form = reactive({ title: '', description: '', color: '#3b82f6', lane_id: '', code: '', assigned_to: '', tags: '', due_date: '' });
+        const newSubtask = ref('');
+        const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
+
+        const api = async (path, options = {}) => {
+          loading.value = true;
+          try {
+            const r = await fetch(`${path}`, {
+              headers: { 'Content-Type': 'application/json', ...options.headers },
+              ...options
+            });
+            if (!r.ok) throw new Error(r.status);
+            return await r.json();
+          } catch (e) {
+            console.error('API Error:', e);
+            alert('Failed to connect. Please try again.');
+            throw e;
+          } finally {
+            loading.value = false;
+          }
+        };
+
+        const loadBoard = async () => {
+          const data = await api('/api/boards/1');
+          if (data.name) boardTitle.value = data.name;
+          board.lanes = data.lanes || [];
+          await nextTick();
+          initSortables();
+        };
+
+        const initSortables = () => {
+          document.querySelectorAll('.lane-cards').forEach(el => {
+            if (el.sortable) return;
+            el.sortable = new Sortable(el,({
+              group: 'cards',
+              animation: 150,
+              ghostClass: 'ghost',
+              dragClass: 'drag',
+              onEnd: async (evt) => {
+                const cardEl = evt.item;
+                const cardId = cardEl.dataset.id;
+                const newLaneId = evt.to.dataset.laneId;
+                const newPosition = evt.newIndex + 1;
+                
+                // Apply glow immediately
+                const theme = themes[currentTheme.value];
+                cardEl.style.boxShadow = `0 0 20px 5px rgba(${theme.glow}, 0.6)`;
+                
+                await api(`/api/cards/${cardId}`, {
+                  method: 'PATCH',
+                  body: JSON.stringify({ lane_id: newLaneId, position: newPosition })
+                });
+                
+                // Keep glow visible
+                setTimeout(() => {
+                  cardEl.style.boxShadow = '';
+                }, 300);
+                // Don't reload - card stays in dropped position
+              }
+            }));
+            el.sortable.el.setAttribute('data-lane-id', el.dataset.laneId);
+          });
+        };
+
+        const startEditTitle = () => {
+          newTitle.value = boardTitle.value;
+          editingTitle.value = true;
+          setTimeout(() => titleInput.value?.focus(), 0);
+        };
+
+        const saveTitle = async () => {
+          if (!newTitle.value.trim()) {
+            editingTitle.value = false;
+            return;
+          }
+          boardTitle.value = newTitle.value;
+          await api('/api/boards/1', {
+            method: 'PATCH',
+            body: JSON.stringify({ name: newTitle.value })
+          });
+          editingTitle.value = false;
+        };
+
+        const openAddCard = (laneId) => {
+          editingCard.value = null;
+          form.title = '';
+          form.description = '';
+          form.color = '#3b82f6';
+          form.lane_id = laneId;
+          form.code = '';
+          form.assigned_to = '';
+          form.tags = '';
+          form.due_date = '';
+          showModal.value = true;
+        };
+
+        const editCard = (card) => {
+          editingCard.value = card;
+          form.title = card.title;
+          form.description = card.description || '';
+          form.color = card.color;
+          form.lane_id = card.lane_id;
+          form.code = card.code || '';
+          form.assigned_to = card.assigned_to || '';
+          form.tags = card.tags || '';
+          form.due_date = card.due_date || '';
+          showModal.value = true;
+        };
+
+        const closeModal = () => { showModal.value = false; };
+
+        const saveCard = async () => {
+          if (!form.title.trim()) return;
+          
+          if (editingCard.value) {
+            await api(`/api/cards/${editingCard.value.id}`, {
+              method: 'PATCH',
+              body: JSON.stringify(form)
+            });
+          } else {
+            await api('/api/cards', {
+              method: 'POST',
+              body: JSON.stringify(form)
+            });
+          }
+          closeModal();
+          loadBoard();
+        };
+
+        const deleteCard = async (cardId) => {
+          const id = cardId || editingCard.value?.id;
+          if (!id) return;
+          if (!confirm('Delete this card?')) return;
+          await api(`/api/cards/${id}`, { method: 'DELETE' });
+          closeModal();
+          loadBoard();
+        };
+
+        const addSubtask = async () => {
+          if (!newSubtask.value.trim() || !editingCard.value) return;
+          await api(`/api/cards/${editingCard.value.id}/subtasks`, {
+            method: 'POST',
+            body: JSON.stringify({ title: newSubtask.value })
+          });
+          newSubtask.value = '';
+          loadBoard();
+          // Re-open card to get updated subtasks
+          const updated = await api(`/api/cards/${editingCard.value.id}`);
+          editingCard.value.subtasks = updated.subtasks || [];
+        };
+
+        const toggleSubtask = async (st) => {
+          await api(`/api/subtasks/${st.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ done: !st.done })
+          });
+          st.done = !st.done;
+        };
+
+        const deleteSubtask = async (st) => {
+          await api(`/api/subtasks/${st.id}`, { method: 'DELETE' });
+          editingCard.value.subtasks = editingCard.value.subtasks.filter(s => s.id !== st.id);
+        };
+
+        const setTheme = (name) => {
+          currentTheme.value = name;
+          localStorage.setItem('kanban-theme', name);
+          document.body.style.background = themes[name].bg;
+          const tagline = document.querySelector('.footer .tagline');
+          if (tagline) tagline.style.color = themes[name].tagline;
+          
+          // Trigger DeLorean when switching to chrome (5-10 min interval)
+          if (name === 'chrome') {
+            const scheduleDelorean = () => {
+              showDelorean.value = true;
+              setTimeout(() => {
+                showDeloreanFlash.value = true;
+                setTimeout(() => { showDeloreanFlash.value = false; }, 800);
+              }, 3400);
+              setTimeout(() => { showDelorean.value = false; }, 4000);
+              setTimeout(scheduleDelorean, 300000 + Math.random() * 300000);
+            };
+            setTimeout(scheduleDelorean, 500);
+          }
+        };
+        
+        onMounted(() => {
+          loadBoard();
+          // Apply saved theme tagline color
+          const tagline = document.querySelector('.footer .tagline');
+          if (tagline) tagline.style.color = themes[currentTheme.value].tagline;
+          
+          // Trigger DeLorean for chrome theme (every 5-10 minutes)
+          const triggerDelorean = () => {
+            if (currentTheme.value === 'chrome') {
+              showDelorean.value = true;
+              setTimeout(() => {
+                showDeloreanFlash.value = true;
+                setTimeout(() => { showDeloreanFlash.value = false; }, 800);
+              }, 3400); // Flash when car disappears
+              setTimeout(() => { showDelorean.value = false; }, 4000);
+              // Random interval 5-10 minutes
+              setTimeout(triggerDelorean, 300000 + Math.random() * 300000);
+            }
+          };
+          if (currentTheme.value === 'chrome') setTimeout(triggerDelorean, 2000);
+        });
+
+        return { board, loading, showDelorean, showDeloreanFlash, boardTitle, editingTitle, newTitle, titleInput, showModal, editingCard, form, newSubtask, colors, generateNewCode, formatDue, getDueClass, openAddCard, editCard, closeModal, saveCard, deleteCard, addSubtask, toggleSubtask, deleteSubtask, startEditTitle, saveTitle, setTheme };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  # Frontend (Vue.js static)
+  frontend:
+    image: nginx:alpine
+    container_name: kanban-frontend
+    restart: always
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    ports:
+      - "3035:80"
+    networks:
+      - kanban-net
+
+  # Backend (Express + SQLite)
+  backend:
+    image: node:20
+    container_name: kanban-backend
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - "3036:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    command: sh -c "npm install && mkdir -p data && node src/index.js"
+    networks:
+      - kanban-net
+    depends_on:
+      - frontend
+
+networks:
+  kanban-net:
+    driver: bridge
