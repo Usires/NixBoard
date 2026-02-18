@@ -20,7 +20,7 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
       background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
       background-size: 600% 600%;
-      animation: gradientBG 8s ease infinite;
+      animation: gradientBG 20s ease infinite;
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -562,7 +562,7 @@
           localStorage.setItem('kanban-theme', name);
           document.body.style.background = themes[name].bg;
           document.body.style.backgroundSize = '600% 600%';
-          document.body.style.animation = 'gradientBG 8s ease infinite';
+          document.body.style.animation = 'gradientBG 20s ease infinite';
           const tagline = document.querySelector('.footer .tagline');
           if (tagline) tagline.style.color = themes[name].tagline;
           
