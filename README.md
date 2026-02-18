@@ -9,9 +9,11 @@ A lightweight, self-hosted Kanban board built with Vue.js, Express, and SQLite. 
 - 📋 **Drag-and-drop** cards between lanes
 - 🏷️ **Card Codes** - 4-letter memorable handles (e.g., BLAZE, FROG) for easy task references in conversations
 - ✅ **Subtasks** - Break down tasks into smaller steps
+- 📅 **Due dates** - Set deadlines with color-coded warnings
 - 👤 **User assignment** - Assign tasks to team members
 - 🎨 **Color coding** - Visual organization with card colors
-- 🎭 **7 Themes** - Purple, Ocean, Sunset, Forest, Fire, Ashes, Chrome
+- 🎭 **8 Themes** - Purple, Ocean, Sunset, Forest, Fire, Ashes, Chrome, Darth
+- 😈 **Darth Mode** - Dark theme with red accents and glow effects
 - 🚗 **Chrome Theme** - Back to the Future DeLorean animation Easter egg!
 - 🔌 **REST API** - Automate with n8n, curl, or any HTTP client
 - 🐳 **Docker Compose** - One-command deployment

@@ -1,15 +1,15 @@
-# Open Source Release Concept
+# Open Source Release - NixBoard v0.6.0
 
-## Repository Name
+## Current Status: Released on GitHub! 🚀
 
-**NixBoard** - Agent-friendly Kanban for home labs
+**Repository:** https://github.com/Usires/NixBoard
 
 ## What Makes It Portable
 
 ### 1. Remove Hardcoded Values
-- [ ] Board name ("Nix & Dirk Todos") → configurable via env var
-- [ ] Default lanes → configurable via JSON/env
-- [ ] Remove "Nix & Dirk" branding from UI
+- [x] Board name configurable via API
+- [x] Default lanes → via API
+- [ ] Remove "Nix & Dirk" branding from UI (optional)
 
 ### 2. Environment-Based Config
 ```yaml
@@ -20,20 +20,19 @@ environment:
   - API_BASE_URL=http://localhost:3036
 ```
 
-### 3. Multi-Board Support (Future)
-- `/api/boards` - List all boards
-- Create/delete boards via API
-- Switch between boards in UI
-
-### 4. Clean Repository Structure
+### 3. Current Repository Structure
 ```
 kanban/
 ├── README.md
 ├── LICENSE
+├── CONTRIBUTING.md
+├── CHANGELOG.md
+├── makingof_kanban.md
 ├── docker-compose.yml
 ├── .env.example
-├── frontend/
-│   └── index.html
+├── .gitignore
+├── index.html          # Frontend (Vue.js)
+├── index.js            # Backend (Express + SQLite)
 └── backend/
     ├── package.json
     └── src/
@@ -42,30 +41,18 @@ kanban/
 
 ## Release Checklist
 
-- [ ] Remove hardcoded "Nix & Dirk" references
-- [ ] Add `.env.example` with configurable options
-- [ ] Add CONTRIBUTING.md
-- [ ] Add `.gitignore`
-- [ ] Test clean `git clone && docker-compose up`
-- [ ] Create GitHub repo
-- [ ] Push and announce!
+- [x] Remove hardcoded "Nix & Dirk" references
+- [x] Add `.env.example` with configurable options
+- [x] Add CONTRIBUTING.md
+- [x] Add `.gitignore`
+- [x] Test clean `git clone && docker-compose up`
+- [x] Create GitHub repo
+- [x] Push and announce!
 
-## Naming Decision
+## Version History
 
-I'd vote for **`home-kanban`** - it's:
-- Memorable
-- Describes the target use case (home labs)
-- Available on GitHub
-
-## First Release (v1.0.0)
-
-Features included:
-- Drag-and-drop
-- Subtasks
-- User assignment
-- Color coding
-- REST API
-- Docker Compose deployment
-
----
-Want me to proceed with making it truly portable (removing hardcoded values)?
+### v0.6.0 - Darth Mode Release (Current)
+- Darth Mode theme (dark with red accents)
+- Due dates with color coding
+- Quick delete with confirmation
+- 8 themes total
