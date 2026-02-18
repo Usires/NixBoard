@@ -14,6 +14,9 @@
 - **Quick Delete** - Trash icon on cards (visible on hover)
   - Delete requires confirmation
 
+### Security
+- Added CORS security note to code (explaining * is OK for self-hosted)
+
 ---
 
 ## [0.5.0] - 2026-02-18 - Beta Release
