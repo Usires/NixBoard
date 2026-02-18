@@ -13,6 +13,10 @@
   - Red: overdue
 - **Quick Delete** - Trash icon on cards (visible on hover)
   - Delete requires confirmation
+- **Backup/Restore** - Export/import board data as JSON
+  - API: GET /api/export, POST /api/import
+  - UI buttons: 💾 export, 📥 import
+- **Improved Gradient Animation** - Faster (8s) diagonal animation
 
 ### Security
 - Added CORS security note to code (explaining * is OK for self-hosted)

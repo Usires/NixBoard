@@ -181,3 +181,5 @@ MIT License - see [LICENSE](LICENSE) for details.
 ---
 
 Built with 🐧 by Nix & Dirk
+
+By Nix & Dirk, 2026. "May the source be with you." • github.com/Usires

@@ -172,9 +172,12 @@ curl -X PATCH http://kanban.asbach-games.fritz.box/api/cards/1 \
 - **Frontend**: http://kanban.asbach-games.fritz.box
 - **API**: http://kanban.asbach-games.fritz.box/api/
 
-## Future Improvements
-- [ ] Drag-and-drop between lanes
-- [ ] Subtasks
-- [ ] User assignment
-- [ ] Due dates
-- [ ] Board sharing
+## Implemented Features ✅
+- [x] Drag-and-drop between lanes
+- [x] Subtasks
+- [x] User assignment
+- [x] Due dates
+- [x] 8 themes (including Darth Mode & Chrome with DeLorean)
+- [x] Card codes (4-letter handles)
+- [x] Backup/Restore (export/import JSON)
+- [x] Security hardening (XSS, SQL injection protection)
