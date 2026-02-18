@@ -73,79 +73,7 @@ server {
 
 ## API Reference
 
-### Boards
-
-```bash
-# Get board with lanes and cards
-GET /api/boards/1
-
-# Response includes lanes, cards, subtasks, assignees, and card codes
-```
-
-### Cards
-
-```bash
-# Create card
-POST /api/cards
-{
-  "lane_id": "backlog",
-  "title": "My task",
-  "description": "Details here",
-  "color": "#3b82f6",
-  "assigned_to": "Dirk",
-  "tags": "frontend,bug"
-}
-
-# Update card
-PATCH /api/cards/:id
-{
-  "lane_id": "in-progress",
-  "description": "Updated description",
-  "assigned_to": "Nix",
-  "code": "BLAZE"
-}
-
-# Move card (drag-and-drop)
-PATCH /api/cards/:id
-{
-  "lane_id": "done",
-  "position": 1
-}
-
-# Delete card
-DELETE /api/cards/:id
-```
-
-### Card Codes
-
-```bash
-# Generate a new random card code (4 letters)
-GET /api/generate-code
-
-# Response: {"code": "FROG"}
-```
-
-### Subtasks
-
-```bash
-# Get subtasks for card
-GET /api/cards/:cardId/subtasks
-
-# Add subtask
-POST /api/cards/:cardId/subtasks
-{
-  "title": "Step 1"
-}
-
-# Toggle subtask
-PATCH /api/subtasks/:id
-{
-  "done": true
-}
-
-# Delete subtask
-DELETE /api/subtasks/:id
-```
+For complete API documentation, see [API.md](API.md).
 
 ## Architecture
 
@@ -182,7 +110,6 @@ npm install
 PORT=3000 node src/index.js
 
 # Frontend - serve with any static server
-cd frontend
 python3 -m http.server 3035
 ```
 
@@ -194,12 +121,56 @@ python3 -m http.server 3035
 - [sql.js](https://sql.js.org/) - SQLite in JavaScript
 - [Docker](https://www.docker.com/) - Containerization
 
-## Security Features
+## Security
 
-- Input sanitization (XSS prevention)
-- Parameterized SQL queries
-- Configurable CORS
-- Request size limits
+### What's Protected
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| **SQL Injection** | ✅ Safe | Parameterized queries (`?` placeholders) |
+| **XSS Prevention** | ✅ Safe | Input sanitization escapes `< > " '` |
+| **Request Size Limit** | ✅ Safe | 1MB limit on JSON payloads |
+| **Input Validation** | ✅ Safe | Length limits on all text fields |
+
+### Security Gaps (Home Lab Acceptable)
+
+| Issue | Risk | Recommendation |
+|-------|------|----------------|
+| **No authentication** | Anyone on network can modify data | Fine for home lab |
+| **No rate limiting** | DoS possible | Add `express-rate-limit` for production |
+| **No HTTPS** | Traffic unencrypted | Use nginx with TLS |
+
+### Exposing to the Web
+
+If you want to expose NixBoard publicly, add these layers:
+
+1. **Basic Auth** (nginx with htpasswd)
+2. **TLS/HTTPS** (Let's Encrypt certbot)
+3. **Restrict CORS**: `CORS_ORIGIN=https://yourdomain.com`
+4. **Rate Limiting**: Add `express-rate-limit`
+
+```nginx
+# nginx example with auth
+server {
+    server_name kanban.yourdomain.com;
+    
+    # Basic auth
+    auth_basic "Restricted";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+    
+    location / {
+        proxy_pass http://localhost:3035;
+    }
+    
+    location /api/ {
+        proxy_pass http://localhost:3036;
+    }
+}
+```
+
+---
+
+**Note:** NixBoard is designed for home lab use. It has no built-in user authentication - that's intentional for simplicity.
 
 ## License
 

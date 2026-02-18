@@ -6,7 +6,7 @@ Welcome! This project aims to be a simple, self-hosted Kanban board for home lab
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/home-kanban.git
+git clone https://github.com/Usires/NixBoard.git
 cd home-kanban
 
 # Start with Docker
@@ -19,8 +19,8 @@ cd frontend && python3 -m http.server 3035
 
 ## Project Structure
 
-- `frontend/index.html` - Single-page Vue.js app
-- `backend/src/index.js` - Express API server
+- `index.html` - Single-page Vue.js app (frontend)
+- `index.js` - Express API server (backend)
 - `backend/src/migrate.js` - Database migrations
 
 ## Making Changes
