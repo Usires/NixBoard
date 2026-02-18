@@ -1,8 +1,8 @@
-# NixBoard
+# NixBoard v0.6.0
 
 A lightweight, self-hosted Kanban board built with Vue.js, Express, and SQLite. Designed for home lab use with n8n automation support. Agent-friendly for AI assistants like OpenClaw.
 
-![Kanban Board](https://img.shields.io/badge/status-active-green) ![Vue.js 3](https://img.shields.io/badge/Vue.js-3.x-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+![Kanban Board](https://img.shields.io/badge/status-active-green) ![Vue.js 3](https://img.shields.io/badge/Vue.js-3.x-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![v0.6.0](https://img.shields.io/badge/version-0.6.0-blue)
 
 ## Features
 
