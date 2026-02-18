@@ -32,6 +32,8 @@ docker-compose up -d
 open http://localhost:3035
 ```
 
+> **Note:** This app loads Vue.js and SortableJS from CDN (unpkg.com). It requires internet access on first load. For offline use, you'd need to bundle these locally.
+
 ## Testing
 
 ```bash

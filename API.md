@@ -195,3 +195,34 @@ Common status codes:
 - `404` - Not Found
 - `413` - Payload Too Large
 - `500` - Server Error
+
+---
+
+## Backup & Restore
+
+### Export Board
+
+```bash
+GET /api/export
+```
+
+Returns a JSON file with all boards, lanes, cards, and subtasks. Response includes `Content-Disposition: attachment` header for download.
+
+### Import Board
+
+```bash
+POST /api/import
+Content-Type: application/json
+
+{
+  "boards": [
+    {
+      "id": 1,
+      "name": "My Board",
+      "lanes": [...]
+    }
+  ]
+}
+```
+
+**Warning:** This replaces all existing data!

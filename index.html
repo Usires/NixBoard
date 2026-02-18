@@ -210,6 +210,9 @@
         <button class="theme-btn" @click="setTheme('ashes')">💨</button>
         <button class="theme-btn chrome-btn" @click="setTheme('chrome')">⚡</button>
         <button class="theme-btn darth-btn" @click="setTheme('darth')">🎭</button>
+        <button class="theme-btn" @click="exportBoard" title="Export">💾</button>
+        <button class="theme-btn" @click="triggerImport" title="Import">📥</button>
+        <input type="file" id="importFile" @change="importBoard" style="display:none" accept=".json" />
       </div>
     </div>
     <div class="lane-titles-box">
@@ -578,6 +581,39 @@
           }
         };
         
+        const exportBoard = async () => {
+          const data = await api('/api/export');
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `nixboard-backup-${new Date().toISOString().split('T')[0]}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+        };
+        
+        const triggerImport = () => {
+          document.getElementById('importFile').click();
+        };
+        
+        const importBoard = async (event) => {
+          const file = event.target.files[0];
+          if (!file) return;
+          if (!confirm('⚠️ This will replace ALL existing data! Continue?')) return;
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            try {
+              const data = JSON.parse(e.target.result);
+              await api('/api/import', { method: 'POST', body: JSON.stringify(data) });
+              loadBoard();
+              alert('Import successful!');
+            } catch (err) {
+              alert('Import failed: ' + err.message);
+            }
+          };
+          reader.readAsText(file);
+        };
+        
         onMounted(() => {
           loadBoard();
           // Apply saved theme tagline color
@@ -600,7 +636,7 @@
           if (currentTheme.value === 'chrome') setTimeout(triggerDelorean, 2000);
         });
 
-        return { board, loading, showDelorean, showDeloreanFlash, boardTitle, editingTitle, newTitle, titleInput, showModal, editingCard, form, newSubtask, colors, generateNewCode, formatDue, getDueClass, openAddCard, editCard, closeModal, saveCard, deleteCard, addSubtask, toggleSubtask, deleteSubtask, startEditTitle, saveTitle, setTheme };
+        return { board, loading, showDelorean, showDeloreanFlash, boardTitle, editingTitle, newTitle, titleInput, showModal, editingCard, form, newSubtask, colors, generateNewCode, formatDue, getDueClass, openAddCard, editCard, closeModal, saveCard, deleteCard, addSubtask, toggleSubtask, deleteSubtask, startEditTitle, saveTitle, setTheme, exportBoard, triggerImport, importBoard };
       }
     }).mount('#app');
   </script>

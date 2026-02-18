@@ -506,6 +506,90 @@ app.delete('/api/subtasks/:id', (req, res) => {
   res.json({ success: true });
 });
 
+// Export board data (backup)
+app.get('/api/export', (req, res) => {
+  const boards = [];
+  const boardStmt = db.prepare('SELECT * FROM boards');
+  while (boardStmt.step()) {
+    const board = boardStmt.getAsObject();
+    const lanes = [];
+    const laneStmt = db.prepare('SELECT * FROM lanes WHERE board_id = ? ORDER BY position');
+    laneStmt.bind([board.id]);
+    while (laneStmt.step()) {
+      const lane = laneStmt.getAsObject();
+      const cards = [];
+      const cardStmt = db.prepare('SELECT * FROM cards WHERE lane_id = ? ORDER BY position');
+      cardStmt.bind([lane.id]);
+      while (cardStmt.step()) {
+        const card = cardStmt.getAsObject();
+        const subtasks = [];
+        const stStmt = db.prepare('SELECT * FROM subtasks WHERE card_id = ? ORDER BY position');
+        stStmt.bind([card.id]);
+        while (stStmt.step()) subtasks.push(stStmt.getAsObject());
+        stStmt.free();
+        card.subtasks = subtasks;
+        cards.push(card);
+      }
+      cardStmt.free();
+      lane.cards = cards;
+      lanes.push(lane);
+    }
+    laneStmt.free();
+    board.lanes = lanes;
+    boards.push(board);
+  }
+  boardStmt.free();
+  
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', 'attachment; filename=nixboard-backup.json');
+  res.json({ version: '1.0', exported_at: new Date().toISOString(), boards });
+});
+
+// Import board data (restore)
+app.post('/api/import', (req, res) => {
+  const { boards } = req.body;
+  
+  if (!boards || !Array.isArray(boards)) {
+    return res.status(400).json({ error: 'Invalid backup format' });
+  }
+  
+  try {
+    // Clear existing data
+    db.run('DELETE FROM subtasks');
+    db.run('DELETE FROM cards');
+    db.run('DELETE FROM lanes');
+    db.run('DELETE FROM boards');
+    
+    for (const board of boards) {
+      db.run('INSERT INTO boards (id, name, created_at) VALUES (?, ?, ?)',
+        [board.id, board.name, board.created_at]);
+      
+      for (const lane of (board.lanes || [])) {
+        db.run('INSERT INTO lanes (id, board_id, title, position) VALUES (?, ?, ?, ?)',
+          [lane.id, board.id, lane.title, lane.position]);
+        
+        for (const card of (lane.cards || [])) {
+          db.run(`INSERT INTO cards (id, lane_id, title, description, color, position, code, assigned_to, tags, due_date, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [card.id, lane.id, card.title, card.description, card.color, card.position, 
+             card.code, card.assigned_to, card.tags, card.due_date, card.created_at]);
+          
+          for (const st of (card.subtasks || [])) {
+            db.run('INSERT INTO subtasks (id, card_id, title, done, position) VALUES (?, ?, ?, ?, ?)',
+              [st.id, card.id, st.title, st.done ? 1 : 0, st.position]);
+          }
+        }
+      }
+    }
+    
+    saveDb(db);
+    res.json({ success: true, message: 'Backup restored successfully' });
+  } catch (err) {
+    console.error('Import error:', err);
+    res.status(500).json({ error: 'Import failed: ' + err.message });
+  }
+});
+
 // Global error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
