@@ -32,6 +32,16 @@ docker-compose up -d
 open http://localhost:3035
 ```
 
+## Testing
+
+```bash
+# Run smoke tests against live API
+API_URL=http://localhost:3036 node test/smoke.js
+
+# Run unit tests (requires local setup)
+npm test
+```
+
 ## Configuration
 
 ### Environment Variables
