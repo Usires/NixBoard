@@ -1,5 +1,27 @@
 # Changelog - NixBoard
 
+## [0.7.0] - 2026-02-19 - Galaxy Release
+
+### Added
+- **Galaxy Theme** - New theme with warp drive star animation
+  - Deep purple/space gradient background
+  - 100 animated stars warping outward (Windows 3.1 screensaver style)
+  - Purple glow accents
+  - Light lavender text
+- **Theme Tooltips** - Hover over theme buttons to see names
+- **AGENTS.md** - New AI agent integration guide
+  - Card codes explanation
+  - Example curl commands
+  - Agent configuration tips
+
+### Changed
+- **Footer Text** - Changed to white for better readability on all themes
+- **Darth Theme** - Updated with dark red accent gradient
+- **Theme Buttons** - Uniform styling (removed special Chrome/Darth button styles)
+- **Default Lanes** - Now uppercase: BACKLOG, IN PROGRESS, DONE, BLOCKED
+
+---
+
 ## [0.6.0] - 2026-02-18 - Darth Mode Release
 
 ### Added

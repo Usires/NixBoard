@@ -57,8 +57,6 @@
     .theme-buttons { display: flex; gap: 4px; }
     .theme-btn { background: none; border: 1px solid #ddd; padding: 4px 6px; border-radius: 4px; cursor: pointer; font-size: 12px; }
     .theme-btn:hover { transform: scale(1.1); }
-    .chrome-btn { background: linear-gradient(90deg, #8B0000, #FF4500, #FFD700) !important; border-color: #FFD700 !important; color: white; font-weight: bold; }
-    .darth-btn { background: #1a1a2e !important; border-color: #ff3333 !important; color: #ff3333 !important; }
     
     /* DeLorean pixel animation */
     .delorean {
@@ -118,6 +116,7 @@
     .lane { padding-top: 0; }
     .lane-cards { padding: 12px; flex: 1; min-height: 100px; }
     .card {
+      position: relative;
       background: #fff; border-radius: 6px; padding: 12px; margin-bottom: 8px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.08); cursor: pointer; transition: box-shadow 0.2s;
     }
@@ -150,9 +149,10 @@
       color: #666; cursor: pointer; text-align: left; font-size: 14px;
     }
     .add-card-btn:hover { color: #333; }
-    .footer { text-align: center; padding: 20px; color: #999; font-size: 12px; }
-    .footer .tagline { font-size: 11px; color: #666; margin-top: 4px; }
-    .footer .version { font-size: 10px; color: #888; }
+    .footer { text-align: center; padding: 20px; color: #fff; font-size: 12px; }
+    .footer .tagline { font-size: 11px; color: #ffffff; margin-top: 4px; }
+    .footer .version { font-size: 10px; color: #ffffff; }
+    .footer a { color: #ffffff; }
     .footer span { color: #3b82f6; }
     .theme-btn { background: none; border: 1px solid #ddd; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; margin: 0 4px; }
     .loading { position: fixed; top: 10px; right: 10px; background: #3b82f6; color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; z-index: 1000; }
@@ -202,14 +202,15 @@
       <h1 v-if="!editingTitle">📋 {{ boardTitle }} <button class="edit-title-btn" @click="startEditTitle">✏️</button></h1>
       <input v-else class="board-title-input" v-model="newTitle" @keyup.enter="saveTitle" @blur="saveTitle" ref="titleInput" />
       <div class="theme-buttons">
-        <button class="theme-btn" @click="setTheme('purple')">🌌</button>
-        <button class="theme-btn" @click="setTheme('ocean')">🌊</button>
-        <button class="theme-btn" @click="setTheme('sunset')">🌅</button>
-        <button class="theme-btn" @click="setTheme('forest')">🌲</button>
-        <button class="theme-btn" @click="setTheme('fire')">🔥</button>
-        <button class="theme-btn" @click="setTheme('ashes')">💨</button>
-        <button class="theme-btn chrome-btn" @click="setTheme('chrome')">⚡</button>
-        <button class="theme-btn darth-btn" @click="setTheme('darth')">🎭</button>
+        <button class="theme-btn" @click="setTheme('purple')" title="Purple">🌌</button>
+        <button class="theme-btn" @click="setTheme('ocean')" title="Ocean">🌊</button>
+        <button class="theme-btn" @click="setTheme('sunset')" title="Sunset">🌅</button>
+        <button class="theme-btn" @click="setTheme('forest')" title="Forest">🌲</button>
+        <button class="theme-btn" @click="setTheme('fire')" title="Fire">🔥</button>
+        <button class="theme-btn" @click="setTheme('ashes')" title="Ashes">💨</button>
+        <button class="theme-btn" @click="setTheme('chrome')" title="Chrome">⚡</button>
+        <button class="theme-btn" @click="setTheme('galaxy')" title="Galaxy">🪐</button>
+        <button class="theme-btn" @click="setTheme('darth')" title="Darth">🎭</button>
         <button class="theme-btn" @click="exportBoard" title="Export">💾</button>
         <button class="theme-btn" @click="triggerImport" title="Import">📥</button>
         <input type="file" id="importFile" @change="importBoard" style="display:none" accept=".json" />
@@ -312,8 +313,8 @@
     <!-- Footer -->
     <div class="footer">
       Built with <span>❤️</span> by <strong>Nix</strong> & <strong>Dirk</strong> 🐧<br>
-      <span class="version">v0.6.0</span>
-      <div class="tagline">By Nix & Dirk, 2026. "May the source be with you." • <a href="https://github.com/Usires" target="_blank">github.com/Usires</a></div>
+      <span class="version">NixBoard v0.6.0</span>
+      <div class="tagline">Made in February 2026. "May the source be with you." • <a href="https://github.com/Usires" target="_blank">github.com/Usires</a></div>
     </div>
   </div>
 
@@ -322,14 +323,47 @@
     const config = window.kanbanConfig || {};
 
     const themes = {
-      purple: { bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)', tagline: '#e0e0e0', header: 'rgba(102, 126, 234, 0.15)', glow: '102, 126, 234' },
-      ocean: { bg: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%)', tagline: '#e0e0e0', header: 'rgba(30, 60, 114, 0.2)', glow: '30, 60, 114' },
-      sunset: { bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', tagline: '#555', header: 'rgba(250, 112, 154, 0.15)', glow: '250, 112, 154' },
-      forest: { bg: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)', tagline: '#e0e0e0', header: 'rgba(19, 78, 94, 0.2)', glow: '19, 78, 94' },
-      fire: { bg: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)', tagline: '#ffe0b2', header: 'rgba(241, 39, 17, 0.15)', glow: '241, 39, 17' },
-      ashes: { bg: 'linear-gradient(135deg, #3c3c3c 0%, #8a8a8a 100%)', tagline: '#ccc', header: 'rgba(60, 60, 60, 0.2)', glow: '60, 60, 60' },
-      chrome: { bg: 'linear-gradient(135deg, #8B0000 0%, #b22222 25%, #dc143c 50%, #ff4500 75%, #8B0000 100%)', tagline: '#fff', header: 'rgba(139, 0, 0, 0.4)', glow: '255, 69, 0' },
-      darth: { bg: 'linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1a 100%)', tagline: '#ff3333', header: 'rgba(20, 20, 30, 0.8)', glow: '255, 51, 51', cardBg: 'rgba(30, 30, 40, 0.9)', text: '#e0e0e0' }
+      purple: { bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)', tagline: '#ffffff', header: 'rgba(102, 126, 234, 0.15)', glow: '102, 126, 234' },
+      ocean: { bg: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%)', tagline: '#ffffff', header: 'rgba(30, 60, 114, 0.2)', glow: '30, 60, 114' },
+      sunset: { bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', tagline: '#ffffff', header: 'rgba(250, 112, 154, 0.15)', glow: '250, 112, 154' },
+      forest: { bg: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)', tagline: '#ffffff', header: 'rgba(19, 78, 94, 0.2)', glow: '19, 78, 94' },
+      fire: { bg: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)', tagline: '#ffffff', header: 'rgba(241, 39, 17, 0.15)', glow: '241, 39, 17' },
+      ashes: { bg: 'linear-gradient(135deg, #3c3c3c 0%, #8a8a8a 100%)', tagline: '#ffffff', header: 'rgba(60, 60, 60, 0.2)', glow: '60, 60, 60' },
+      chrome: { bg: 'linear-gradient(135deg, #8B0000 0%, #b22222 25%, #dc143c 50%, #ff4500 75%, #8B0000 100%)', tagline: '#ffffff', header: 'rgba(139, 0, 0, 0.4)', glow: '255, 69, 0' },
+      darth: { bg: 'linear-gradient(135deg, #1a0a0a 0%, #2d0a0a 25%, #0f0a0a 50%, #1a0a0a 75%, #2d0a0a 100%)', tagline: '#ffffff', header: 'rgba(40, 10, 10, 0.85)', glow: '180, 30, 30', cardBg: 'rgba(30, 20, 20, 0.9)', text: '#e0d0d0' },
+      galaxy: { bg: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)', tagline: '#ffffff', header: 'rgba(15, 12, 41, 0.6)', glow: '138, 43, 226', cardBg: 'rgba(40, 20, 80, 0.85)', text: '#e0d4ff' }
+    };
+
+    // Galaxy warp stars animation
+    const addGalaxyStars = () => {
+      if (document.getElementById('galaxy-stars')) return;
+      const style = document.createElement('style');
+      style.id = 'galaxy-stars';
+      style.textContent = `
+        @keyframes warp { 0% { transform: translate(0, 0) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(1); opacity: 0; } }
+        .galaxy-bg { position: fixed; top: 50%; left: 50%; width: 0; height: 0; pointer-events: none; z-index: -1; overflow: visible; }
+        .star { position: absolute; background: white; border-radius: 50%; box-shadow: 0 0 4px white; animation: warp var(--duration) linear infinite; animation-delay: var(--delay); }
+      `;
+      document.head.appendChild(style);
+      const stars = document.createElement('div');
+      stars.className = 'galaxy-bg';
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 800 + Math.random() * 600;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+        star.style.setProperty('--tx', tx + 'px');
+        star.style.setProperty('--ty', ty + 'px');
+        star.style.setProperty('--duration', (2 + Math.random() * 3) + 's');
+        star.style.setProperty('--delay', (Math.random() * 3) + 's');
+        star.style.left = '0';
+        star.style.top = '0';
+        star.style.width = star.style.height = (1 + Math.random() * 2) + 'px';
+        stars.appendChild(star);
+      }
+      document.body.insertBefore(stars, document.body.firstChild);
     };
 
     // Card code words - loaded from API endpoint /api/generate-code
@@ -373,6 +407,7 @@
     document.body.style.background = theme.bg;
     document.body.style.backgroundSize = '600% 600%';
     document.body.style.animation = 'gradientBG 8s ease infinite';
+    if (currentTheme.value === 'galaxy') addGalaxyStars();
 
     createApp({
       setup() {
@@ -562,6 +597,7 @@
           localStorage.setItem('kanban-theme', name);
           document.body.style.background = themes[name].bg;
           document.body.style.backgroundSize = '600% 600%';
+          if (name === 'galaxy') { addGalaxyStars(); } else { const s = document.querySelector('.galaxy-bg'); if (s) s.remove(); }
           document.body.style.animation = 'gradientBG 20s ease infinite';
           const tagline = document.querySelector('.footer .tagline');
           if (tagline) tagline.style.color = themes[name].tagline;

@@ -11,7 +11,7 @@ const CONFIG = {
   PORT: process.env.PORT || process.env.API_PORT || 3000,
   DB_PATH: process.env.DB_PATH || '/app/data/kanban.db',
   BOARD_NAME: process.env.BOARD_NAME || 'My Project Board',
-  DEFAULT_LANES: (process.env.DEFAULT_LANES || 'Backlog,In Progress,Done,Blocked').split(','),
+  DEFAULT_LANES: (process.env.DEFAULT_LANES || 'BACKLOG,IN PROGRESS,DONE,BLOCKED').split(','),
 };
 
 const LIMITS = {

@@ -79,6 +79,13 @@ server {
 
 For complete API documentation, see [API.md](API.md).
 
+## AI Agent Integration
+
+For AI assistants (like OpenClaw, custom agents, etc.), see [AGENTS.md](AGENTS.md) for:
+- How to use card codes in conversations
+- Example curl commands
+- Agent configuration tips
+
 ## Architecture
 
 ```
