@@ -1,15 +1,16 @@
-# NixBoard v0.6.0
+# NixBoard v0.8.2
 
 A lightweight, self-hosted Kanban board built with Vue.js, Express, and SQLite. Designed for home lab use with n8n automation support. Agent-friendly for AI assistants like OpenClaw.
 
 <img src="media/nixboard_v060.jpg" width="800" alt="NixBoard Screenshot">
 
-![Kanban Board](https://img.shields.io/badge/status-active-green) ![Vue.js 3](https://img.shields.io/badge/Vue.js-3.x-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![v0.6.0](https://img.shields.io/badge/version-0.6.0-blue)
+![Kanban Board](https://img.shields.io/badge/status-active-green) ![Vue.js 3](https://img.shields.io/badge/Vue.js-3.x-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![v0.8.2](https://img.shields.io/badge/version-0.8.2-blue)
 
 ## Features
 
 - 📋 **Drag-and-drop** cards between lanes
 - 🏷️ **Card Codes** - 4-letter memorable handles (e.g., BLAZE, FROG) for easy task references in conversations
+- 🔒 **Unique Codes** - Automatic duplicate prevention ensures each card has a unique code
 - ✅ **Subtasks** - Break down tasks into smaller steps
 - 📅 **Due dates** - Set deadlines with color-coded warnings
 - 👤 **User assignment** - Assign tasks to team members
@@ -19,6 +20,7 @@ A lightweight, self-hosted Kanban board built with Vue.js, Express, and SQLite. 
 - 🚗 **Chrome Theme** - Back to the Future DeLorean animation Easter egg!
 - 🔌 **REST API** - Automate with n8n, curl, or any HTTP client
 - 🐳 **Docker Compose** - One-command deployment
+- 🧩 **Modular Architecture** - Clean separation: routes, services, API layer
 
 ## Quick Start
 
