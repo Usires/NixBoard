@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NixBoard</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <script>
     // Configuration - can be overridden via window.kanbanConfig
     window.kanbanConfig = {
@@ -14,11 +18,13 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://unpkg.com/sortablejs@1.15.0/Sortable.min.js"></script>
   <script src="https://unpkg.com/@vueuse/core"></script>
+  <script src="src/constants.js"></script>
+  <script src="src/api.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      font-family: 'IBM Plex Sans', sans-serif; 
+      background: linear-gradient(135deg, #475569 0%, #6366f1 50%, #818cf8 100%);
       background-size: 600% 600%;
       animation: gradientBG 20s ease infinite;
       min-height: 100vh;
@@ -31,7 +37,7 @@
       50% { background-position: 100% 100%; }
       100% { background-position: 0% 0%; }
     }
-    #app { padding: 20px; padding-top: 80px; width: 100%; max-width: 1400px; position: relative; }
+    #app { padding: 20px; padding-top: 20px; width: 100%; max-width: 1400px; position: relative; }
     .board-title-box { 
       position: sticky; 
       top: 0; 
@@ -50,12 +56,12 @@
       margin-left: auto;
       margin-right: auto;
     }
-    h1 { color: #333; display: flex; align-items: center; gap: 12px; }
+    h1 { font-family: 'Outfit', sans-serif; font-weight: 700; color: #333; display: flex; align-items: center; gap: 12px; letter-spacing: -0.5px; }
     .board-title-input { font-size: 24px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; }
     .edit-title-btn { background: none; border: none; cursor: pointer; font-size: 18px; opacity: 0.5; }
     .edit-title-btn:hover { opacity: 1; }
     .theme-buttons { display: flex; gap: 4px; }
-    .theme-btn { background: none; border: 1px solid #ddd; padding: 4px 6px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .theme-btn { background: none; border: 1px solid #ddd; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: 14px; }
     .theme-btn:hover { transform: scale(1.1); }
     
     /* DeLorean pixel animation */
@@ -101,8 +107,10 @@
       margin-left: auto;
       margin-right: auto;
     }
-    .sticky-lanes { display: flex; gap: 16px; width: 100%; max-width: 1184px; }
-    .sticky-lane-header { flex: 1; min-width: 280px; padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; text-align: center; }
+    .sticky-lanes { display: flex; gap: 16px; width: 100%; max-width: 1184px; position: sticky; top: 0; z-index: 100; background: transparent; padding: 8px 0; }
+    .sticky-lane-header { flex: 1; min-width: 280px; padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; text-align: center; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.95); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .header-add-btn { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.6; padding: 0 8px; }
+    .header-add-btn:hover { opacity: 1; }
     .sticky-lane-header.lane-backlog { background: #dbeafe; color: #1e40af; }
     .sticky-lane-header.lane-in-progress { background: #fef3c7; color: #92400e; }
     .sticky-lane-header.lane-done { background: #dcfce7; color: #166534; }
@@ -117,10 +125,10 @@
     .lane-cards { padding: 12px; flex: 1; min-height: 100px; }
     .card {
       position: relative;
-      background: #fff; border-radius: 6px; padding: 12px; margin-bottom: 8px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.08); cursor: pointer; transition: box-shadow 0.2s;
+      background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06); cursor: pointer; transition: box-shadow 0.2s;
     }
-    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.08); transform: translateY(-2px); }
     .card.ghost { opacity: 0.4; background: #e0e7ff; }
     .card.drag { cursor: grabbing; }
     .card.just-dropped { animation: glowPulse 1.5s ease-out; }
@@ -134,7 +142,7 @@
     .card-delete { position: absolute; top: 4px; right: 4px; background: none; border: none; cursor: pointer; opacity: 0; font-size: 16px; font-weight: bold; color: #ef4444; transition: opacity 0.2s; z-index: 10; }
     .card:hover .card-delete { opacity: 0.7; }
     .card-delete:hover { opacity: 1 !important; }
-    .card-desc { font-size: 12px; color: #666; }
+    .card-desc { font-size: 12px; color: #666; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; max-height: 4.2em; }
     .card-assigned { font-size: 11px; color: #3b82f6; margin-top: 4px; }
     .card-subtasks { font-size: 11px; color: #10b981; margin-top: 4px; }
     .card-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
@@ -143,7 +151,7 @@
     .card-due.due-soon { background: #fef9c3; color: #854d0e; }
     .card-due.due-overdue { background: #fee2e2; color: #991b1b; }
     .card-tag { font-size: 10px; padding: 2px 6px; background: #e5e7eb; border-radius: 4px; color: #374151; }
-    .card-color { width: 100%; height: 4px; border-radius: 2px; margin-top: 8px; }
+    .card-color { width: 4px; height: 100%; position: absolute; left: 0; top: 0; border-radius: 8px 0 0 8px; }
     .add-card-btn {
       width: 100%; padding: 10px; border: none; background: transparent;
       color: #666; cursor: pointer; text-align: left; font-size: 14px;
@@ -154,7 +162,8 @@
     .footer .version { font-size: 10px; color: #ffffff; }
     .footer a { color: #ffffff; }
     .footer span { color: #3b82f6; }
-    .theme-btn { background: none; border: 1px solid #ddd; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; margin: 0 4px; }
+    .theme-btn { background: none; border: 1px solid #ddd; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: 14px; margin: 0 4px; }
+    .theme-btn:hover { transform: scale(1.2); }
     .loading { position: fixed; top: 10px; right: 10px; background: #3b82f6; color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; z-index: 1000; }
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.5);
@@ -165,7 +174,7 @@
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
     .form-group input, .form-group textarea {
-      width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;
+      width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;
     }
     .color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
     .code-input-row { display: flex; gap: 8px; align-items: center; }
@@ -178,7 +187,7 @@
     }
     .color-option.selected { border-color: #333; }
     .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
-    .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; }
+    .btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; }
     .btn-primary { background: #3b82f6; color: #fff; }
     .btn-secondary { background: #e5e5e5; color: #333; }
     .btn-danger { background: #ef4444; color: #fff; }
@@ -191,6 +200,13 @@
     .subtask-delete { color: #ef4444; cursor: pointer; font-size: 18px; }
     .add-subtask { display: flex; gap: 8px; margin-top: 8px; }
     .add-subtask input { flex: 1; padding: 6px 10px; font-size: 13px; }
+    
+    /* Filter bar */
+    .filter-bar { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .filter-input { padding: 6px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 200px; background: #fff; color: #333; }
+    .filter-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 2px rgba(102,126,234,0.2); }
+    .filter-count { color: #aaa; font-size: 13px; }
+    .filter-count.hidden { color: #ef4444; }
   </style>
 </head>
 <body>
@@ -199,8 +215,15 @@
     <div class="delorean" :class="{ driving: showDelorean }">🚗💨</div>
     <div class="loading" v-if="loading">Loading...</div>
     <div class="board-title-box">
-      <h1 v-if="!editingTitle">📋 {{ boardTitle }} <button class="edit-title-btn" @click="startEditTitle">✏️</button></h1>
-      <input v-else class="board-title-input" v-model="newTitle" @keyup.enter="saveTitle" @blur="saveTitle" ref="titleInput" />
+      <div>
+        <h1 v-if="!editingTitle">📋 {{ boardTitle }} <button class="edit-title-btn" @click="startEditTitle">✏️</button></h1>
+        <input v-else class="board-title-input" v-model="newTitle" @keyup.enter="saveTitle" @blur="saveTitle" ref="titleInput" />
+        <div class="filter-bar">
+          <input v-model="filterText" placeholder="Filter by title or tag..." class="filter-input" />
+          <span v-if="filterText && hiddenCount > 0" class="filter-count hidden">({{ hiddenCount }} hidden)</span>
+          <span v-else-if="filterText" class="filter-count">(all visible)</span>
+        </div>
+      </div>
       <div class="theme-buttons">
         <button class="theme-btn" @click="setTheme('purple')" title="Purple">🌌</button>
         <button class="theme-btn" @click="setTheme('ocean')" title="Ocean">🌊</button>
@@ -218,13 +241,14 @@
     </div>
     <div class="lane-titles-box">
       <div class="sticky-lanes">
-        <div class="sticky-lane-header" :class="'lane-' + lane.id" v-for="lane in board.lanes" :key="lane.id">
+        <div class="sticky-lane-header" :class="'lane-' + lane.id" v-for="lane in filteredLanes" :key="lane.id">
           {{ lane.title }}
+          <button class="header-add-btn" @click="openAddCard(lane.id)" title="Add card">+</button>
         </div>
       </div>
     </div>
     <div class="board">
-      <div class="lane" v-for="lane in board.lanes" :key="lane.id">
+      <div class="lane" v-for="lane in filteredLanes" :key="lane.id">
         <div class="lane-cards" :data-lane-id="lane.id">
           <div class="card" v-for="card in lane.cards" :key="card.id" :data-id="card.id" @click="editCard(card)">
             <div class="card-code" v-if="card.code">{{ card.code }}</div>
@@ -241,7 +265,6 @@
             <div class="card-due" v-if="card.due_date" :class="getDueClass(card.due_date)">📅 {{ formatDue(card.due_date) }}</div>
             <div class="card-color" :style="{ background: card.color }"></div>
           </div>
-          <button class="add-card-btn" @click="openAddCard(lane.id)">+ Add card</button>
         </div>
       </div>
     </div>
@@ -313,17 +336,17 @@
     <!-- Footer -->
     <div class="footer">
       Built with <span>❤️</span> by <strong>Nix</strong> & <strong>Dirk</strong> 🐧<br>
-      <span class="version">NixBoard v0.6.0</span>
+      <span class="version">NixBoard v0.8.2</span>
       <div class="tagline">Made in February 2026. "May the source be with you." • <a href="https://github.com/Usires" target="_blank">github.com/Usires</a></div>
     </div>
   </div>
 
   <script>
-    const { createApp, ref, reactive, onMounted, nextTick } = Vue;
+    const { createApp, ref, reactive, computed, onMounted, nextTick } = Vue;
     const config = window.kanbanConfig || {};
 
     const themes = {
-      purple: { bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)', tagline: '#ffffff', header: 'rgba(102, 126, 234, 0.15)', glow: '102, 126, 234' },
+      purple: { bg: 'linear-gradient(135deg, #475569 0%, #6366f1 50%, #818cf8 100%)', tagline: '#ffffff', header: 'rgba(99, 102, 241, 0.15)', glow: '99, 102, 241' },
       ocean: { bg: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%)', tagline: '#ffffff', header: 'rgba(30, 60, 114, 0.2)', glow: '30, 60, 114' },
       sunset: { bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', tagline: '#ffffff', header: 'rgba(250, 112, 154, 0.15)', glow: '250, 112, 154' },
       forest: { bg: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)', tagline: '#ffffff', header: 'rgba(19, 78, 94, 0.2)', glow: '19, 78, 94' },
@@ -423,6 +446,32 @@
         const editingCard = ref(null);
         const form = reactive({ title: '', description: '', color: '#3b82f6', lane_id: '', code: '', assigned_to: '', tags: '', due_date: '' });
         const newSubtask = ref('');
+        const filterText = ref('');
+        
+        // Filter logic
+        const filteredLanes = computed(() => {
+          if (!filterText.value.trim()) return board.lanes;
+          const term = filterText.value.toLowerCase();
+          return board.lanes.map(lane => ({
+            ...lane,
+            cards: lane.cards.filter(card => 
+              card.title.toLowerCase().includes(term) || 
+              (card.tags && card.tags.toLowerCase().includes(term))
+            )
+          }));
+        });
+        
+        const hiddenCount = computed(() => {
+          if (!filterText.value.trim()) return 0;
+          const term = filterText.value.toLowerCase();
+          return board.lanes.reduce((sum, lane) => {
+            return sum + lane.cards.filter(card => 
+              !card.title.toLowerCase().includes(term) &&
+              !(card.tags && card.tags.toLowerCase().includes(term))
+            ).length;
+          }, 0);
+        });
+        
         const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
 
         const api = async (path, options = {}) => {
@@ -445,7 +494,7 @@
 
         const loadBoard = async () => {
           const data = await api('/api/boards/1');
-          if (data.name) boardTitle.value = data.name;
+          if (data.title) boardTitle.value = data.title;
           board.lanes = data.lanes || [];
           await nextTick();
           initSortables();
@@ -618,7 +667,7 @@
         };
         
         const exportBoard = async () => {
-          const data = await api('/api/export');
+          const data = await api('/api/boards/export');
           const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
@@ -672,7 +721,7 @@
           if (currentTheme.value === 'chrome') setTimeout(triggerDelorean, 2000);
         });
 
-        return { board, loading, showDelorean, showDeloreanFlash, boardTitle, editingTitle, newTitle, titleInput, showModal, editingCard, form, newSubtask, colors, generateNewCode, formatDue, getDueClass, openAddCard, editCard, closeModal, saveCard, deleteCard, addSubtask, toggleSubtask, deleteSubtask, startEditTitle, saveTitle, setTheme, exportBoard, triggerImport, importBoard };
+        return { board, loading, showDelorean, showDeloreanFlash, boardTitle, editingTitle, newTitle, titleInput, showModal, editingCard, form, newSubtask, filterText, filteredLanes, hiddenCount, colors, generateNewCode, formatDue, getDueClass, openAddCard, editCard, closeModal, saveCard, deleteCard, addSubtask, toggleSubtask, deleteSubtask, startEditTitle, saveTitle, setTheme, exportBoard, triggerImport, importBoard };
       }
     }).mount('#app');
   </script>

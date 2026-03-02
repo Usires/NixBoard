@@ -1,5 +1,75 @@
 # Changelog - NixBoard
 
+## [0.8.2] - 2026-02-25 - UX Improvements Release
+
+### Added
+- **Sticky Lane Headers** - Lane headers now stay visible when scrolling
+- **Fixed Add Card Button** - "+" button moved to lane header, separate from draggable cards
+- **Board Title Persistence** - Title now saves to database correctly
+
+### Fixed
+- **Export Endpoint** - Was calling wrong path (/api/export → /api/boards/export)
+- **Favicon** - Added favicon.svg
+- **Board Title API** - Fixed PATCH endpoint to accept both 'title' and 'name' fields
+- **Load Board** - Fixed frontend to read data.title (not data.name)
+- **Card Descriptions** - Now properly saved and loaded from database
+
+### Changed
+- **Padding** - Reduced top padding from 80px to 20px
+- **Design** - Improved card colors (left border), IBM Plex Sans fonts, muted gradients
+- **Sticky Headers** - Added semi-transparent background for better visibility
+
+---
+
+## [0.8.1] - 2026-02-25 - Bugfix Release
+
+### Fixed
+- Board title now persists correctly to database
+- Frontend: Fixed data.title → boardTitle mapping
+- Backend: Accepts both 'title' and 'name' fields for compatibility
+- MD Explorer: Fixed API port (3036 → 3038)
+
+---
+
+## [0.8.0] - 2026-02-25 - Clean Code Release
+
+### Added
+- **Clean Code Refactor** - Backend architecture overhaul
+  - Split monolithic index.js into src/routes/ and src/services/
+  - New src/services/db.js - Database initialization
+  - New src/routes/boards.js - Board endpoints
+  - New src/routes/cards.js - Card endpoints
+- **Filter System (CORN)** - Card filtering by title and tags
+  - Filter bar below board title
+  - Searches both title and tags
+  - Hidden card counter
+- **Agent Review System** - Three AI agents for code quality
+  - RefactorBot (Clean Code)
+  - ArchBot (Clean Architecture)
+  - DesignBot (UX/UI)
+
+### Changed
+- **UI Improvements**
+  - Typography: IBM Plex Sans (distinctive, no system fallbacks)
+  - Gradient: Muted colors (less "AI purple")
+  - Cards: Left border color indicator instead of top bar
+  - Card hover: Lift effect with transform
+  - Theme buttons: Increased to 14px, 1.2x hover scale
+- **Backend**
+  - Fixed PATCH /api/boards/:id endpoint
+  - Board title now persists to database
+  - Better error handling in routes
+- **Security**
+  - MD Explorer: Improved path validation (isAllowedPath)
+  - Added .env file for secrets
+
+### Fixed
+- MD Explorer API port (3036 → 3038)
+- Backend DB path resolution
+- Duplicate MD routes removed
+
+---
+
 ## [0.7.0] - 2026-02-19 - Galaxy Release
 
 ### Added
