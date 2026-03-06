@@ -21,6 +21,9 @@ This guide explains how AI assistants can interact with NixBoard via its REST AP
 | Delete card | DELETE | `/api/cards/{id}` |
 | List lanes | GET | `/api/boards/1` (includes lanes) |
 | Generate card code | GET | `/api/generate-code` |
+| Create subtask | POST | `/api/cards/{cardId}/subtasks` |
+| Update subtask | PATCH | `/api/subtasks/{id}` |
+| Delete subtask | DELETE | `/api/subtasks/{id}` |
 
 ## Lane IDs
 - `backlog` - Backlog
