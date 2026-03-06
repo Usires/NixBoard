@@ -181,3 +181,65 @@ curl -X PATCH http://kanban.asbach-games.fritz.box/api/cards/1 \
 - [x] Card codes (4-letter handles)
 - [x] Backup/Restore (export/import JSON)
 - [x] Security hardening (XSS, SQL injection protection)
+
+---
+
+## Session: 2026-03-06 - Agent Review & Bugfix
+
+### Participants
+- **Dirk** - Product Owner, Captain
+- **Nix** - AI First Officer
+- **ArchBot** - Architecture reviewer
+- **DesignBot** - UX reviewer  
+- **RefactorBot** - Code quality reviewer
+- **QABot** - QA reviewer
+
+### Agenda
+1. Agent walkthrough of board content (card-level)
+2. Agent walkthrough of code (implementation-level)
+3. Fix critical bugs found
+
+### Issues Found
+
+#### Board Content Review
+- CLAW card overdue (due 2026-02-20)
+- COIL blocked by decision needed
+- LILAC/XENO need verification
+
+#### Code Review Results
+
+**Frontend Issues:**
+- Single 34KB HTML file getting unwieldy
+- Error handling via alert() - poor UX
+- No tests
+
+**Backend Issues:**
+- CODE_WORDS duplicated (18 vs 39 words)
+- **CRITICAL**: Subtask CRUD endpoints missing!
+- **CRITICAL**: sql.js stmt.run() called with spread args instead of array - silent failure!
+
+### Fixes Applied
+
+1. **Subtask CRUD** - Added full REST API:
+   - POST /api/cards/:cardId/subtasks
+   - PATCH /api/subtasks/:id
+   - DELETE /api/subtasks/:id
+
+2. **Card Move Fix** - Fixed stmt.run parameter format in cards.js:
+   - Changed `stmt.run(...values)` → `stmt.run(values)`
+
+3. **CODE_WORDS** - Synced to cards.js (39 words)
+
+### New API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/cards/:cardId/subtasks | Create subtask |
+| PATCH | /api/subtasks/:id | Update subtask |
+| DELETE | /api/subtasks/:id | Delete subtask |
+
+### Lessons Learned
+- sql.js stmt.run() expects array, not spread
+- Frontend can call endpoints that don't exist - always verify API
+- Agent code reviews find real bugs!
+

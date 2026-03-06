@@ -94,7 +94,7 @@ module.exports = (db) => {
     values.push(id);
     
     const stmt = db.prepare(`UPDATE cards SET ${fields.join(', ')} WHERE id = ?`);
-    stmt.run(...values);
+    stmt.run(values);
     stmt.free();
     
     res.json({ success: true });

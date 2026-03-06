@@ -79,12 +79,25 @@ const initDb = async () => {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(DB_PATH, Buffer.from(data));
   
-  // Auto-save wrapper
-  const originalRun = db.run.bind(db);
+  // Auto-save wrapper for db.run()
+  const originalDbRun = db.run.bind(db);
   db.run = (...args) => {
-    originalRun(...args);
+    originalDbRun(...args);
     const data = db.export();
     fs.writeFileSync(DB_PATH, Buffer.from(data));
+  };
+
+  // Auto-save wrapper for stmt.run() - wrap the prepare method
+  const originalPrepare = db.prepare.bind(db);
+  db.prepare = (sql) => {
+    const stmt = originalPrepare(sql);
+    const originalStmtRun = stmt.run.bind(stmt);
+    stmt.run = (...args) => {
+      originalStmtRun(...args);
+      const data = db.export();
+      fs.writeFileSync(DB_PATH, Buffer.from(data));
+    };
+    return stmt;
   };
   
   return db;

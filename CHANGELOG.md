@@ -2,6 +2,53 @@
 
 ## [0.8.2] - 2026-02-25 - UX Improvements Release
 
+---
+
+## [0.8.3] - 2026-03-06 - Agent Review & Bugfix Release
+
+### Added
+- **Subtask CRUD Endpoints** - Complete REST API for subtask management
+  - POST /api/cards/:cardId/subtasks - Create subtask
+  - PATCH /api/subtasks/:id - Update subtask (title, done, position)
+  - DELETE /api/subtasks/:id - Delete subtask
+
+### Fixed
+- **Manual Card Move Persistence** - Fixed sql.js stmt.run parameter format
+  - Changed from spread to array format - this was a silent failure!
+- **Missing Subtask Endpoints** - Frontend was calling non-existent endpoints
+  - Added full subtask CRUD to backend
+  - Code synced to /home/dirk/nixboard/
+
+### Refactored
+- CODE_WORDS unified in cards.js (39 words now)
+
+### Security Notes
+- No auth - still suitable for local/homelab use only
+
+---
+
+## [0.8.2.1] - 2026-03-06 - Agent Code Review
+
+### Agent Walkthrough Results
+
+#### Architecture (archbot)
+- Frontend: Vue 3 via CDN, SortableJS, single 34KB HTML file
+- Backend: Express plus sql.js, file-based SQLite
+
+#### Code Quality (designbot)
+- Creative theming system (9 themes)
+- Smooth drag-drop
+
+#### Refactoring (refactorbot) - Critical Findings
+- CODE_WORDS duplicated (index.js vs cards.js) - FIXED
+- Missing subtask CRUD endpoints - FIXED
+- No transactions, no indexes, no migrations
+
+#### QA (qabot)
+- No tests
+- Error handling via alert - poor UX
+
+
 ### Added
 - **Sticky Lane Headers** - Lane headers now stay visible when scrolling
 - **Fixed Add Card Button** - "+" button moved to lane header, separate from draggable cards
@@ -269,3 +316,55 @@
 - Basic card CRUD operations
 - SQLite database persistence
 - Docker Compose setup
+
+---
+
+## [0.8.3] - 2026-03-06 - Agent Review & Bugfix Release
+
+### Added
+- **Subtask CRUD Endpoints** - Complete REST API for subtask management
+  - POST /api/cards/:cardId/subtasks - Create subtask
+  - PATCH /api/subtasks/:id - Update subtask (title, done, position)
+  - DELETE /api/subtasks/:id - Delete subtask
+
+### Fixed
+- **Manual Card Move Persistence** - Fixed sql.js stmt.run() parameter format (array vs spread)
+  - Changed from  to  - this was a silent failure!
+- **Missing Subtask Endpoints** - Frontend was calling non-existent subtask endpoints
+  - Added full subtask CRUD to backend
+  - Code synced to /home/dirk/nixboard/
+
+### Refactored
+- CODE_WORDS unified in cards.js (39 words now)
+
+### Security Notes
+- No auth - still suitable for local/homelab use only
+- Basic auth (COME) still on roadmap for external exposure
+
+---
+
+## [0.8.2.1] - 2026-03-06 - Agent Code Review
+
+### Agent Walkthrough Results
+
+#### Architecture (archbot)
+- Frontend: Vue 3 via CDN, SortableJS, single 34KB HTML file
+- Backend: Express + sql.js, file-based SQLite
+- Multiple boards already has unused board_id column in schema
+- No auth, hardcoded board_id=1
+
+#### Code Quality (designbot)
+- Creative theming system (9 themes)
+- Smooth drag-drop
+- Single file getting unwieldy - recommend proper Vue build
+
+#### Refactoring (refactorbot) - Critical Findings
+- CODE_WORDS duplicated (index.js 18 words, cards.js 39 words) - FIXED
+- Missing subtask CRUD endpoints - FIXED
+- No transactions, no indexes, no migrations
+- No input validation
+
+#### QA (qabot)
+- No tests
+- Edge cases not handled
+- Error handling via alert() - poor UX

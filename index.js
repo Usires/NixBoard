@@ -19,10 +19,12 @@ initDb().then(db => {
   // Import routes
   const boardsRouter = require('./src/routes/boards')(db);
   const cardsRouter = require('./src/routes/cards')(db);
+  const subtasksRouter = require('./src/routes/subtasks')(db);
   
   // Mount routes
   app.use('/api/boards', boardsRouter);
   app.use('/api/cards', cardsRouter);
+  app.use('/api', subtasksRouter);
   
   // Generate code endpoint
   const CODE_WORDS = ['SPAR', 'LILAC', 'GALE', 'CLAW', 'STAR', 'BOLD', 'COIL', 'CORN', 'ZEST', 'COME', 'NOVA', 'CODE', 'PREF', 'VEX', 'XENO', 'FERN', 'MEDI', 'BURY'];
