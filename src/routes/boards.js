@@ -6,7 +6,7 @@ module.exports = (db) => {
   // Get board with lanes and cards
   router.get('/:id', (req, res) => {
     // Get board title from DB or use default
-    let boardTitle = 'NixBoard v0.8.2';
+    let boardTitle = 'NixBoard v0.9.0';
     try {
       const titleStmt = db.prepare('SELECT value FROM board_config WHERE key = ?');
       titleStmt.bind(['title']);
