@@ -33,8 +33,6 @@
   - Each theme now has `modal` property for overlay background
   - CSS variables enable instant theme switching
 
-### YouTube Tags
-- Added "youtube" tag to content cards for easy filtering
 
 ---
 
