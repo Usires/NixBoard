@@ -25,7 +25,7 @@ module.exports = (db) => {
       const lane = lanesStmt.getAsObject();
       lane.cards = [];
       
-      const cardsStmt = db.prepare('SELECT * FROM cards WHERE lane_id = ? ORDER BY position');
+      const cardsStmt = db.prepare('SELECT * FROM cards WHERE lane_id = ? AND archived = 0 ORDER BY position');
       cardsStmt.bind([lane.id]);
       while (cardsStmt.step()) {
         const card = cardsStmt.getAsObject();
@@ -74,7 +74,7 @@ module.exports = (db) => {
       const lane = lanesStmt.getAsObject();
       lane.cards = [];
       
-      const cardsStmt = db.prepare('SELECT * FROM cards WHERE lane_id = ? ORDER BY position');
+      const cardsStmt = db.prepare('SELECT * FROM cards WHERE lane_id = ? AND archived = 0 ORDER BY position');
       cardsStmt.bind([lane.id]);
       while (cardsStmt.step()) {
         const card = cardsStmt.getAsObject();

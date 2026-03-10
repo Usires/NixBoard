@@ -1,5 +1,47 @@
 # Changelog - NixBoard
 
+## [0.9.0] - 2026-03-10 - UI Polish & Archive Release
+
+### Added
+- **Archive Feature** - New overlay for archived cards
+  - Cards can be archived from the edit modal
+  - Archived cards view accessible via 📦 button in header
+  - Restore or permanently delete archived cards
+  - Archive stores archived_at timestamp
+- **Modal Overlay Styling** - Card edit modal now styled as overlay
+  - Backdrop blur effect
+  - Slide-in animation
+  - Theme-aware gradients (each theme has matching modal colors)
+- **Header Button Redesign** - Improved header actions
+  - Two rows: theme buttons on top, tool buttons on bottom
+  - Larger, more visible buttons with shadows
+  - Tool buttons show labels: "💾 Save", "📥 Load", "📦 Archive"
+  - Hover and active states for better feedback
+- **ESC Key Support** - Press Escape to close archive overlay
+- **Click Outside to Close** - Click backdrop to close archive/modal
+
+### Fixed
+- **Archive Toggle Bug** - `showArchive is not defined` error
+  - Functions were defined outside Vue setup() scope
+  - Moved toggleArchive, restoreCard, deleteArchivedCard inside setup()
+- **Modal Theme Not Updating** - Modal always showed purple gradient
+  - Changed from direct DOM manipulation to CSS variables
+  - setTheme now sets --modal-bg and --modal-text on documentElement
+
+### Changed
+- **Theme System** - Extended with modal-specific gradients
+  - Each theme now has `modal` property for overlay background
+  - CSS variables enable instant theme switching
+
+### YouTube Tags
+- Added "youtube" tag to content cards for easy filtering
+
+---
+
+## [0.8.3] - 2026-03-06 - Agent Review & Bugfix Release
+
+# Changelog - NixBoard
+
 ## [0.8.2] - 2026-02-25 - UX Improvements Release
 
 ---

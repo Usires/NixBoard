@@ -60,14 +60,9 @@
     .board-title-input { font-size: 24px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; }
     .edit-title-btn { background: none; border: none; cursor: pointer; font-size: 18px; opacity: 0.5; }
     .edit-title-btn:hover { opacity: 1; }
-    .header-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
-    .button-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-    .theme-btn { background: rgba(255,255,255,0.9); border: 2px solid rgba(255,255,255,0.4); padding: 8px 10px; border-radius: 10px; cursor: pointer; font-size: 18px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
-    .theme-btn:hover { transform: scale(1.15); background: #fff; border-color: rgba(255,255,255,0.8); }
-    .theme-btn:active { transform: scale(0.95); }
-    .tool-btn { background: rgba(255,255,255,0.95); border: 2px solid rgba(255,255,255,0.5); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.15); color: #333; }
-    .tool-btn:hover { transform: scale(1.1); background: #fff; }
-    .tool-btn:active { transform: scale(0.95); }
+    .theme-buttons { display: flex; gap: 4px; }
+    .theme-btn { background: none; border: 1px solid #ddd; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+    .theme-btn:hover { transform: scale(1.1); }
     
     /* DeLorean pixel animation */
     .delorean {
@@ -171,35 +166,10 @@
     .theme-btn:hover { transform: scale(1.2); }
     .loading { position: fixed; top: 10px; right: 10px; background: #3b82f6; color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; z-index: 1000; }
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
       display: flex; align-items: center; justify-content: center; z-index: 100;
-      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     }
-    .modal { 
-      background: var(--modal-bg, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
-      color: var(--modal-text, #fff);
-      border-radius: 16px; padding: 24px; width: 420px; max-width: 90vw;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      animation: modalSlideIn 0.25s ease-out;
-    }
-    @keyframes modalSlideIn {
-      0% { opacity: 0; transform: translateY(-20px) scale(0.96); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .modal h2 { margin-bottom: 16px; color: inherit; font-family: 'Outfit', sans-serif; }
-    .modal .form-group label { color: var(--modal-text-light, rgba(255,255,255,0.8)); }
-    .modal .form-group input, .modal .form-group textarea {
-      background: rgba(255,255,255,0.95); border: 1px solid rgba(255,255,255,0.3); color: #333;
-    }
-    .modal .btn-primary { background: #fff; color: #333; }
-    .modal .btn-primary:hover { background: #f0f0f0; }
-    .modal .btn-secondary { background: rgba(255,255,255,0.25); color: inherit; border: 1px solid rgba(255,255,255,0.3); }
-    .modal .btn-secondary:hover { background: rgba(255,255,255,0.35); }
-    .modal .btn-danger { background: #ef4444; color: #fff; }
-    .modal .subtasks { border-top: 1px solid rgba(255,255,255,0.2); }
-    .modal .subtask-title { color: inherit; }
-    .modal .subtask-title.done { color: rgba(255,255,255,0.5); }
-    .modal .code-regen-btn { background: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.5); }
+    .modal { background: #fff; border-radius: 12px; padding: 24px; width: 400px; max-width: 90vw; }
     .modal h2 { margin-bottom: 16px; }
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
@@ -237,39 +207,19 @@
     .filter-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 2px rgba(102,126,234,0.2); }
     .filter-count { color: #aaa; font-size: 13px; }
     .filter-count.hidden { color: #ef4444; }
-    /* Archive Overlay */
-    .archive-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-      display: flex; align-items: center; justify-content: center; z-index: 200;
-      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    }
-    .archive-modal {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 16px; width: 90%; max-width: 900px; max-height: 85vh;
-      display: flex; flex-direction: column;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      animation: archiveSlideIn 0.3s ease-out;
-    }
-    @keyframes archiveSlideIn {
-      0% { opacity: 0; transform: translateY(-30px) scale(0.95); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .archive-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.2); }
-    .archive-header h2 { font-family: 'Outfit', sans-serif; color: #fff; font-size: 24px; margin: 0; }
-    .archive-close { background: rgba(255,255,255,0.2); border: none; color: #fff; font-size: 24px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; }
-    .archive-close:hover { background: rgba(255,255,255,0.3); }
-    .archive-body { padding: 24px; overflow-y: auto; flex: 1; }
-    .archive-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
-    .archive-card { background: rgba(255,255,255,0.95); border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.2s, box-shadow 0.2s; }
-    .archive-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.2); }
+    .archive-view { padding: 20px; }
+    .archive-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .archive-header h2 { font-family: 'Outfit', sans-serif; color: #fff; font-size: 28px; }
+    .archive-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .archive-card { background: rgba(255,255,255,0.95); border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; }
+    .archive-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
     .archive-card-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
     .archive-card-code { font-size: 11px; font-weight: 600; color: #666; background: #eee; padding: 2px 6px; border-radius: 4px; }
     .archive-card-date { font-size: 11px; color: #999; }
-    .archive-card-title { font-weight: 600; font-size: 15px; margin-bottom: 8px; color: #333; }
-    .archive-card-desc { font-size: 12px; color: #666; margin-bottom: 12px; line-height: 1.4; }
+    .archive-card-title { font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #333; }
+    .archive-card-desc { font-size: 13px; color: #666; margin-bottom: 12px; line-height: 1.4; }
     .archive-card-actions { display: flex; gap: 8px; }
-    .archive-empty { grid-column: 1 / -1; text-align: center; color: rgba(255,255,255,0.8); font-size: 18px; padding: 40px; }
-    .archive-empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .archive-empty { grid-column: 1 / -1; text-align: center; color: rgba(255,255,255,0.7); font-size: 18px; padding: 40px; }
   </style>
 </head>
 <body>
@@ -287,24 +237,20 @@
           <span v-else-if="filterText" class="filter-count">(all visible)</span>
         </div>
       </div>
-      <div class="header-actions">
-        <div class="button-row">
-          <button class="theme-btn" @click="setTheme('purple')" title="Purple">🌌</button>
-          <button class="theme-btn" @click="setTheme('ocean')" title="Ocean">🌊</button>
-          <button class="theme-btn" @click="setTheme('sunset')" title="Sunset">🌅</button>
-          <button class="theme-btn" @click="setTheme('forest')" title="Forest">🌲</button>
-          <button class="theme-btn" @click="setTheme('fire')" title="Fire">🔥</button>
-          <button class="theme-btn" @click="setTheme('ashes')" title="Ashes">💨</button>
-          <button class="theme-btn" @click="setTheme('chrome')" title="Chrome">⚡</button>
-          <button class="theme-btn" @click="setTheme('galaxy')" title="Galaxy">🪐</button>
-          <button class="theme-btn" @click="setTheme('darth')" title="Darth">🎭</button>
-        </div>
-        <div class="button-row">
-          <button class="tool-btn" @click="exportBoard" title="Export">💾 Save</button>
-          <button class="tool-btn" @click="triggerImport" title="Import">📥 Load</button>
-          <button class="tool-btn" @click="toggleArchive" title="Archive">📦 Archive</button>
-          <input type="file" id="importFile" @change="importBoard" style="display:none" accept=".json" />
-        </div>
+      <div class="theme-buttons">
+        <button class="theme-btn" @click="setTheme('purple')" title="Purple">🌌</button>
+        <button class="theme-btn" @click="setTheme('ocean')" title="Ocean">🌊</button>
+        <button class="theme-btn" @click="setTheme('sunset')" title="Sunset">🌅</button>
+        <button class="theme-btn" @click="setTheme('forest')" title="Forest">🌲</button>
+        <button class="theme-btn" @click="setTheme('fire')" title="Fire">🔥</button>
+        <button class="theme-btn" @click="setTheme('ashes')" title="Ashes">💨</button>
+        <button class="theme-btn" @click="setTheme('chrome')" title="Chrome">⚡</button>
+        <button class="theme-btn" @click="setTheme('galaxy')" title="Galaxy">🪐</button>
+        <button class="theme-btn" @click="setTheme('darth')" title="Darth">🎭</button>
+        <button class="theme-btn" @click="exportBoard" title="Export">💾</button>
+        <button class="theme-btn" @click="triggerImport" title="Import">📥</button>
+        <button class="theme-btn" @click="toggleArchive" title="Archive">📦</button>
+        <input type="file" id="importFile" @change="importBoard" style="display:none" accept=".json" />
       </div>
     </div>
     <div class="lane-titles-box">
@@ -337,32 +283,27 @@
       </div>
     </div>
 
-    <!-- Archive Overlay -->
-    <div v-if="showArchive" class="archive-overlay" @click.self="toggleArchive" @keyup.escape="toggleArchive">
-      <div class="archive-modal" @keyup.esc="toggleArchive">
-        <div class="archive-header">
-          <h2>📦 Archive</h2>
-          <button class="archive-close" @click="toggleArchive" title="Close (ESC)">×</button>
-        </div>
-        <div class="archive-body">
-          <div class="archive-grid">
-            <div class="archive-card" v-for="card in archivedCards" :key="card.id" :style="{ borderLeft: '4px solid ' + card.color }">
-              <div class="archive-card-header">
-                <span class="archive-card-code">{{ card.code }}</span>
-                <span class="archive-card-date" v-if="card.archived_at">Archived {{ formatDate(card.archived_at) }}</span>
-              </div>
-              <div class="archive-card-title">{{ card.title }}</div>
-              <div class="archive-card-desc" v-if="card.description">{{ card.description.substring(0, 100) }}{{ card.description.length > 100 ? '...' : '' }}</div>
-              <div class="archive-card-actions">
-                <button class="btn btn-sm btn-secondary" @click="restoreCard(card)">Restore</button>
-                <button class="btn btn-sm btn-danger" @click="deleteArchivedCard(card.id)">Delete</button>
-              </div>
-            </div>
-            <div v-if="archivedCards.length === 0" class="archive-empty">
-              <div class="archive-empty-icon">📦</div>
-              No archived cards yet.
-            </div>
+    <!-- Archive View -->
+    <div v-if="showArchive" class="archive-view">
+      <div class="archive-header">
+        <h2>📦 Archive</h2>
+        <button class="btn btn-secondary" @click="toggleArchive">← Back to Board</button>
+      </div>
+      <div class="archive-grid">
+        <div class="archive-card" v-for="card in archivedCards" :key="card.id" :style="{ borderLeft: '4px solid ' + card.color }">
+          <div class="archive-card-header">
+            <span class="archive-card-code">{{ card.code }}</span>
+            <span class="archive-card-date" v-if="card.archived_at">Archived {{ formatDate(card.archived_at) }}</span>
           </div>
+          <div class="archive-card-title">{{ card.title }}</div>
+          <div class="archive-card-desc" v-if="card.description">{{ card.description.substring(0, 100) }}{{ card.description.length > 100 ? '...' : '' }}</div>
+          <div class="archive-card-actions">
+            <button class="btn btn-sm btn-secondary" @click="restoreCard(card)">Restore</button>
+            <button class="btn btn-sm btn-danger" @click="deleteArchivedCard(card.id)">Delete</button>
+          </div>
+        </div>
+        <div v-if="archivedCards.length === 0" class="archive-empty">
+          No archived cards yet. 📦
         </div>
       </div>
     </div>
@@ -446,15 +387,15 @@
     const config = window.kanbanConfig || {};
 
     const themes = {
-      purple: { bg: 'linear-gradient(135deg, #475569 0%, #6366f1 50%, #818cf8 100%)', tagline: '#ffffff', header: 'rgba(99, 102, 241, 0.15)', glow: '99, 102, 241', modal: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', modalText: '#ffffff' },
-      ocean: { bg: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%)', tagline: '#ffffff', header: 'rgba(30, 60, 114, 0.2)', glow: '30, 60, 114', modal: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', modalText: '#ffffff' },
-      sunset: { bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', tagline: '#ffffff', header: 'rgba(250, 112, 154, 0.15)', glow: '250, 112, 154', modal: 'linear-gradient(135deg, #fa709a 0%, #f43f5e 100%)', modalText: '#ffffff' },
-      forest: { bg: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)', tagline: '#ffffff', header: 'rgba(19, 78, 94, 0.2)', glow: '19, 78, 94', modal: 'linear-gradient(135deg, #134e5e 0%, #0f3d3e 100%)', modalText: '#ffffff' },
-      fire: { bg: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)', tagline: '#ffffff', header: 'rgba(241, 39, 17, 0.15)', glow: '241, 39, 17', modal: 'linear-gradient(135deg, #f12711 0%, #dc2626 100%)', modalText: '#ffffff' },
-      ashes: { bg: 'linear-gradient(135deg, #3c3c3c 0%, #8a8a8a 100%)', tagline: '#ffffff', header: 'rgba(60, 60, 60, 0.2)', glow: '60, 60, 60', modal: 'linear-gradient(135deg, #3c3c3c 0%, #1f1f1f 100%)', modalText: '#ffffff' },
-      chrome: { bg: 'linear-gradient(135deg, #8B0000 0%, #b22222 25%, #dc143c 50%, #ff4500 75%, #8B0000 100%)', tagline: '#ffffff', header: 'rgba(139, 0, 0, 0.4)', glow: '255, 69, 0', modal: 'linear-gradient(135deg, #dc143c 0%, #ff4500 100%)', modalText: '#ffffff' },
-      darth: { bg: 'linear-gradient(135deg, #1a0a0a 0%, #2d0a0a 25%, #0f0a0a 50%, #1a0a0a 75%, #2d0a0a 100%)', tagline: '#ffffff', header: 'rgba(40, 10, 10, 0.85)', glow: '180, 30, 30', cardBg: 'rgba(30, 20, 20, 0.9)', text: '#e0d0d0', modal: 'linear-gradient(135deg, #1a0a0a 0%, #2d0a0a 100%)', modalText: '#e0d0d0' },
-      galaxy: { bg: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)', tagline: '#ffffff', header: 'rgba(15, 12, 41, 0.6)', glow: '138, 43, 226', cardBg: 'rgba(40, 20, 80, 0.85)', text: '#e0d4ff', modal: 'linear-gradient(135deg, #1a103c 0%, #302b63 100%)', modalText: '#e0d4ff' }
+      purple: { bg: 'linear-gradient(135deg, #475569 0%, #6366f1 50%, #818cf8 100%)', tagline: '#ffffff', header: 'rgba(99, 102, 241, 0.15)', glow: '99, 102, 241' },
+      ocean: { bg: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%)', tagline: '#ffffff', header: 'rgba(30, 60, 114, 0.2)', glow: '30, 60, 114' },
+      sunset: { bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', tagline: '#ffffff', header: 'rgba(250, 112, 154, 0.15)', glow: '250, 112, 154' },
+      forest: { bg: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)', tagline: '#ffffff', header: 'rgba(19, 78, 94, 0.2)', glow: '19, 78, 94' },
+      fire: { bg: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)', tagline: '#ffffff', header: 'rgba(241, 39, 17, 0.15)', glow: '241, 39, 17' },
+      ashes: { bg: 'linear-gradient(135deg, #3c3c3c 0%, #8a8a8a 100%)', tagline: '#ffffff', header: 'rgba(60, 60, 60, 0.2)', glow: '60, 60, 60' },
+      chrome: { bg: 'linear-gradient(135deg, #8B0000 0%, #b22222 25%, #dc143c 50%, #ff4500 75%, #8B0000 100%)', tagline: '#ffffff', header: 'rgba(139, 0, 0, 0.4)', glow: '255, 69, 0' },
+      darth: { bg: 'linear-gradient(135deg, #1a0a0a 0%, #2d0a0a 25%, #0f0a0a 50%, #1a0a0a 75%, #2d0a0a 100%)', tagline: '#ffffff', header: 'rgba(40, 10, 10, 0.85)', glow: '180, 30, 30', cardBg: 'rgba(30, 20, 20, 0.9)', text: '#e0d0d0' },
+      galaxy: { bg: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)', tagline: '#ffffff', header: 'rgba(15, 12, 41, 0.6)', glow: '138, 43, 226', cardBg: 'rgba(40, 20, 80, 0.85)', text: '#e0d4ff' }
     };
 
     // Galaxy warp stars animation
@@ -519,6 +460,27 @@
     };
     
     // Toggle archive view
+    const toggleArchive = async () => {
+      showArchive.value = !showArchive.value;
+      if (showArchive.value) {
+        const cards = await api('/api/cards/archived');
+        archivedCards.value = cards;
+      }
+    };
+    
+    // Restore archived card
+    const restoreCard = async (card) => {
+      await api(`/api/cards/${card.id}/unarchive`, { method: 'POST' });
+      archivedCards.value = archivedCards.value.filter(c => c.id !== card.id);
+    };
+    
+    // Delete archived card permanently
+    const deleteArchivedCard = async (cardId) => {
+      if (!confirm('Permanently delete this card?')) return;
+      await api(`/api/cards/${cardId}`, { method: 'DELETE' });
+      archivedCards.value = archivedCards.value.filter(c => c.id !== cardId);
+    };
+    
     // Get CSS class based on due date
     const getDueClass = (dateStr) => {
       if (!dateStr) return '';
@@ -583,29 +545,6 @@
         });
         
         const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
-
-        // Toggle archive view
-        const toggleArchive = async () => {
-          showArchive.value = !showArchive.value;
-          if (showArchive.value) {
-            const cards = await api('/api/cards/archived');
-            archivedCards.value = cards;
-          }
-        };
-        
-        // Restore archived card
-        const restoreCard = async (card) => {
-          await api(`/api/cards/${card.id}/unarchive`, { method: 'POST' });
-          archivedCards.value = archivedCards.value.filter(c => c.id !== card.id);
-        };
-        
-        // Delete archived card permanently
-        const deleteArchivedCard = async (cardId) => {
-          if (!confirm('Permanently delete this card?')) return;
-          await api(`/api/cards/${cardId}`, { method: 'DELETE' });
-          archivedCards.value = archivedCards.value.filter(c => c.id !== cardId);
-        };
-
 
         const api = async (path, options = {}) => {
           loading.value = true;
@@ -801,11 +740,6 @@
           const tagline = document.querySelector('.footer .tagline');
           if (tagline) tagline.style.color = themes[name].tagline;
           
-          // Apply theme to modal via CSS variables
-          document.documentElement.style.setProperty('--modal-bg', themes[name].modal);
-          document.documentElement.style.setProperty('--modal-text', themes[name].modalText || '#fff');
-          document.documentElement.style.setProperty('--modal-text-light', 'rgba(255,255,255,0.8)');
-          
           // Trigger DeLorean when switching to chrome (5-10 min interval)
           if (name === 'chrome') {
             const scheduleDelorean = () => {
@@ -856,15 +790,6 @@
         
         onMounted(() => {
           loadBoard();
-          // Apply current theme to modal via CSS variables
-          document.documentElement.style.setProperty('--modal-bg', themes[currentTheme.value].modal);
-          document.documentElement.style.setProperty('--modal-text', themes[currentTheme.value].modalText || '#fff');
-          // ESC key to close archive
-          document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && showArchive.value) {
-              toggleArchive();
-            }
-          });
           // Apply saved theme tagline color
           const tagline = document.querySelector('.footer .tagline');
           if (tagline) tagline.style.color = themes[currentTheme.value].tagline;

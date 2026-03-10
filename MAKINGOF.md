@@ -243,3 +243,71 @@ curl -X PATCH http://kanban.asbach-games.fritz.box/api/cards/1 \
 - Frontend can call endpoints that don't exist - always verify API
 - Agent code reviews find real bugs!
 
+
+
+---
+
+## Session: 2026-03-10 - UI Polish & Archive (v0.9)
+
+### Participants
+- **Dirk** - Product Owner, Captain
+- **Nix** - AI First Officer
+
+### Agenda
+1. Fix Archive button (showArchive not defined error)
+2. Implement Archive as overlay instead of inline view
+3. Style modals to match current theme
+4. Improve header button visibility
+
+### Issues Found
+
+1. **Archive Toggle Error**
+   - Error: `ReferenceError: showArchive is not defined`
+   - Cause: Functions defined outside Vue setup() scope
+   - Fix: Moved toggleArchive, restoreCard, deleteArchivedCard inside setup()
+
+2. **Archive View Style**
+   - Was rendering below board as inline div
+   - User expected overlay/modal
+   - Fix: Created .archive-overlay with backdrop blur and slide-in animation
+
+3. **Modal Theme Colors**
+   - Always showed purple gradient regardless of theme
+   - Cause: Modal doesn't exist in DOM until clicked, setTheme couldn't find it
+   - Fix: Use CSS variables (--modal-bg, --modal-text) set on documentElement
+
+4. **Header Buttons**
+   - All in one row, tiny icons
+   - Fix: Split into two rows, larger buttons with labels
+
+### Changes Applied
+
+1. **Archive Overlay**
+   - Added .archive-overlay CSS with fixed positioning
+   - Backdrop blur effect
+   - Slide-in animation from top
+   - Close via × button, ESC key, or clicking outside
+
+2. **Theme-Aware Modals**
+   - Extended themes object with modal gradient
+   - CSS variables for dynamic theming
+   - Each theme has unique modal background
+
+3. **Header Redesign**
+   - Two rows: themes (top), tools (bottom)
+   - 18px emoji buttons with white background
+   - Tool buttons show labels: "💾 Save", "📥 Load", "📦 Archive"
+   - Hover scale effect (1.15x)
+
+### New Features Summary (v0.9)
+- [x] Archive overlay with theme styling
+- [x] Modal overlay with backdrop blur
+- [x] Theme-aware modal colors
+- [x] ESC key to close archive
+- [x] Two-row header with visible buttons
+- [x] YouTube tag filtering
+
+### Lessons Learned
+- Vue refs defined in setup() can't be accessed from global scope
+- CSS variables are better than direct DOM manipulation for theming
+- CSS backdrop-filter creates nice overlay effects

@@ -116,5 +116,38 @@ module.exports = (db) => {
     res.json({ success: true });
   });
   
+  // Archive card
+  router.post('/:id/archive', (req, res) => {
+    const { id } = req.params;
+    const stmt = db.prepare('UPDATE cards SET archived = 1, archived_at = datetime("now") WHERE id = ?');
+    stmt.run([id]);
+    stmt.free();
+    res.json({ success: true });
+  });
+  
+  // Unarchive card
+  router.post('/:id/unarchive', (req, res) => {
+    const { id } = req.params;
+    const stmt = db.prepare('UPDATE cards SET archived = 0, archived_at = NULL WHERE id = ?');
+    stmt.run([id]);
+    stmt.free();
+    res.json({ success: true });
+  });
+  
+  // Get archived cards
+  router.get('/archived', (req, res) => {
+    try {
+      const cards = [];
+      const stmt = db.prepare('SELECT * FROM cards WHERE archived = 1 ORDER BY archived_at DESC');
+      while (stmt.step()) {
+        cards.push(stmt.getAsObject());
+      }
+      stmt.free();
+      res.json(cards);
+    } catch(e) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+  
   return router;
 };

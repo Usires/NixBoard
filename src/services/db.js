@@ -28,7 +28,9 @@ const createTables = (db) => {
       tags TEXT DEFAULT '',
       due_date TEXT DEFAULT '',
       assigned_to TEXT DEFAULT '',
-      created_at TEXT DEFAULT (datetime('now'))
+      created_at TEXT DEFAULT (datetime('now')),
+      archived INTEGER DEFAULT 0,
+      archived_at TEXT DEFAULT NULL
     )
   `);
   
@@ -72,6 +74,14 @@ const initDb = async () => {
   
   createTables(db);
   seedDefaultBoard(db);
+  
+  // Migration: Add archived column if it doesn't exist
+  try {
+    db.run("ALTER TABLE cards ADD COLUMN archived INTEGER DEFAULT 0");
+    db.run("ALTER TABLE cards ADD COLUMN archived_at TEXT DEFAULT NULL");
+  } catch (e) {
+    // Column already exists, ignore
+  }
   
   // Save after initialization
   const data = db.export();
