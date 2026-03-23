@@ -1,6 +1,6 @@
 {
   "name": "nixboard",
-  "version": "0.6.0",
+  "version": "0.9.1",
   "description": "A lightweight, self-hosted Kanban board built with Vue.js, Express, and SQLite. Designed for home lab use with n8n automation support. Agent-friendly for AI assistants like OpenClaw.",
   "main": "index.js",
   "scripts": {

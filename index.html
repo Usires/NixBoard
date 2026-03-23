@@ -65,7 +65,7 @@
       50% { background-position: 100% 100%; }
       100% { background-position: 0% 0%; }
     }
-    #app { padding: 20px; padding-top: 20px; width: 100%; max-width: 1400px; position: relative; }
+    #app { padding: 20px; padding-top: 20px; width: 100%; max-width: 1400px; position: sticky; }
     .board-title-box { 
       position: sticky; 
       top: 0; 
@@ -84,17 +84,21 @@
       margin-left: auto;
       margin-right: auto;
     }
-    h1 { font-family: 'Outfit', sans-serif; font-weight: 700; color: hsl(var(--foreground)); display: flex; align-items: center; gap: 12px; letter-spacing: -0.5px; }
+    .board-title-box h1 { font-size: 28px; font-family: 'Outfit', sans-serif; font-weight: 700; color: hsl(var(--foreground)); display: flex; align-items: center; gap: 12px; letter-spacing: -0.5px; }
     .board-title-input { font-size: 24px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; }
+    .board-title-input:focus { outline: 2px solid #6366f1; outline-offset: 2px; }
     .edit-title-btn { background: none; border: none; cursor: pointer; font-size: 18px; opacity: 0.5; }
     .edit-title-btn:hover { opacity: 1; }
+    .edit-title-btn:focus { opacity: 1; outline: 2px solid #6366f1; outline-offset: 2px; border-radius: 4px; }
     .header-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
     .button-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
     .theme-btn { background: rgba(255,255,255,0.9); border: 2px solid rgba(255,255,255,0.4); padding: 8px 10px; border-radius: 10px; cursor: pointer; font-size: 18px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
     .theme-btn:hover { transform: scale(1.15); background: #fff; border-color: rgba(255,255,255,0.8); }
+    .theme-btn:focus { transform: scale(1.15); outline: 2px solid #6366f1; outline-offset: 2px; }
     .theme-btn:active { transform: scale(0.95); }
     .tool-btn { background: rgba(255,255,255,0.95); border: 2px solid rgba(255,255,255,0.5); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.15); color: hsl(var(--foreground)); }
     .tool-btn:hover { transform: scale(1.1); background: #fff; }
+    .tool-btn:focus { transform: scale(1.1); outline: 2px solid #6366f1; outline-offset: 2px; }
     .tool-btn:active { transform: scale(0.95); }
     
     /* DeLorean pixel animation */
@@ -140,10 +144,11 @@
       margin-left: auto;
       margin-right: auto;
     }
-    .sticky-lanes { display: flex; gap: 16px; width: 100%; max-width: 1184px; position: sticky; top: 0; z-index: 100; background: transparent; padding: 8px 0; }
+    .sticky-lanes { position: sticky; display: flex; gap: 16px; width: 100%; max-width: 1184px; top: 80px; z-index: 50; background: transparent; padding: 8px 0; }
     .sticky-lane-header { flex: 1; min-width: 280px; padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; text-align: center; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.95); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .header-add-btn { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.6; padding: 0 8px; }
-    .header-add-btn:hover { opacity: 1; }
+    .header-add-btn { background: rgba(99, 102, 241, 0.1); border: 1px dashed rgba(99, 102, 241, 0.4); border-radius: 6px; font-size: 14px; cursor: pointer; opacity: 0.8; padding: 6px 12px; color: hsl(var(--foreground)); transition: all 0.2s; }
+    .header-add-btn:hover { opacity: 1; background: rgba(99, 102, 241, 0.2); }
+    .header-add-btn:focus { outline: 2px solid #6366f1; outline-offset: 2px; }
     .sticky-lane-header.lane-backlog { background: #dbeafe; color: #1e40af; }
     .sticky-lane-header.lane-in-progress { background: #fef3c7; color: #92400e; }
     .sticky-lane-header.lane-done { background: #dcfce7; color: #166534; }
@@ -152,12 +157,12 @@
     .lane {
       background: #fff; border-radius: 8px; min-width: 280px; flex: 1;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; flex-direction: column;
-      position: relative;
+      position: sticky;
     }
     .lane { padding-top: 0; }
     .lane-cards { padding: 12px; flex: 1; min-height: 100px; }
     .card {
-      position: relative;
+      position: sticky;
       background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06); cursor: pointer; transition: box-shadow 0.2s;
     }
@@ -172,9 +177,10 @@
     }
     .card-code { font-size: 10px; font-weight: bold; color: #888; letter-spacing: 1px; margin-bottom: 2px; }
     .card-title { font-size: 14px; margin-bottom: 4px; }
-    .card-delete { position: absolute; top: 4px; right: 4px; background: none; border: none; cursor: pointer; opacity: 0; font-size: 16px; font-weight: bold; color: #ef4444; transition: opacity 0.2s; z-index: 10; }
+    .card-delete { position: absolute; top: 4px; right: 4px; background: none; border: none; cursor: pointer; opacity: 0.5; font-size: 16px; font-weight: bold; color: #ef4444; transition: opacity 0.2s; z-index: 10; }
     .card:hover .card-delete { opacity: 0.7; }
     .card-delete:hover { opacity: 1 !important; }
+    .card-delete:focus { opacity: 1; outline: 2px solid #ef4444; outline-offset: 2px; border-radius: 50%; }
     .card-desc { font-size: 12px; color: hsl(var(--muted-foreground)); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; max-height: 4.2em; }
     .card-assigned { font-size: 11px; color: #3b82f6; margin-top: 4px; }
     .card-subtasks { font-size: 11px; color: #10b981; margin-top: 4px; }
@@ -215,14 +221,18 @@
       0% { opacity: 0; transform: translateY(-10px) scale(0.98); }
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .modal h2 { margin-bottom: 16px; color: inherit; font-family: 'Inter', sans-serif; font-weight: 600; }
+    .modal h2 { margin-bottom: 16px; color: inherit; font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; }
     .modal .form-group label { color: hsl(var(--muted-foreground)); font-size: 14px; font-weight: 500; }
     .modal .form-group input, .modal .form-group textarea {
-      background: hsl(var(--background)); border: 1px solid hsl(var(--input)); border-radius: 6px; 
-      color: hsl(var(--foreground)); padding: 8px 12px; font-size: 14px;
+      background: #ffffff; border: 1px solid hsl(var(--border)); border-radius: 6px; 
+      color: #1f2937; padding: 8px 12px; font-size: 14px; width: 100%; box-sizing: border-box;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
     }
     .modal .form-group input:focus, .modal .form-group textarea:focus {
       outline: none; ring: 2px hsl(var(--ring)); border-color: hsl(var(--ring));
+    }
+    .modal .form-group input.error, .modal .form-group textarea.error {
+      border-color: #ef4444; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
     }
     .modal .btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); 
       padding: 8px 16px; border-radius: 6px; font-weight: 500; border: none; cursor: pointer;
@@ -257,7 +267,7 @@
     .code-field { width: 80px; }
     .code-regen-btn { background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 14px; }
     .code-regen-btn:hover { background: #e0e0e0; }
-    .due-date-input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; width: 150px; }
+    .due-date-input { padding: 6px; border: 1px solid hsl(var(--input)); border-radius: 4px; width: 150px; background: hsl(var(--background)); color: hsl(var(--foreground)); }
     .color-option {
       width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent;
     }
@@ -325,7 +335,7 @@
     <div class="loading" v-if="loading">Loading...</div>
     <div class="board-title-box">
       <div>
-        <h1 v-if="!editingTitle">📋 {{ boardTitle }} <button class="edit-title-btn" @click="startEditTitle">✏️</button></h1>
+        <h1 v-if="!editingTitle">📋 {{ boardTitle }} <button class="edit-title-btn" @click="startEditTitle" aria-label="Edit board title">✏️</button></h1>
         <input v-else class="board-title-input" v-model="newTitle" @keyup.enter="saveTitle" @blur="saveTitle" ref="titleInput" />
         <div class="filter-bar">
           <input v-model="filterText" placeholder="Filter by title or tag..." class="filter-input" />
@@ -335,20 +345,20 @@
       </div>
       <div class="header-actions">
         <div class="button-row">
-          <button class="theme-btn" @click="setTheme('purple')" title="Purple">🌌</button>
-          <button class="theme-btn" @click="setTheme('ocean')" title="Ocean">🌊</button>
-          <button class="theme-btn" @click="setTheme('sunset')" title="Sunset">🌅</button>
-          <button class="theme-btn" @click="setTheme('forest')" title="Forest">🌲</button>
-          <button class="theme-btn" @click="setTheme('fire')" title="Fire">🔥</button>
-          <button class="theme-btn" @click="setTheme('ashes')" title="Ashes">💨</button>
-          <button class="theme-btn" @click="setTheme('chrome')" title="Chrome">⚡</button>
-          <button class="theme-btn" @click="setTheme('galaxy')" title="Galaxy">🪐</button>
-          <button class="theme-btn" @click="setTheme('darth')" title="Darth">🎭</button>
+          <button class="theme-btn" @click="setTheme('purple')" aria-label="Purple theme">🌌</button>
+          <button class="theme-btn" @click="setTheme('ocean')" aria-label="Ocean theme">🌊</button>
+          <button class="theme-btn" @click="setTheme('sunset')" aria-label="Sunset theme">🌅</button>
+          <button class="theme-btn" @click="setTheme('forest')" aria-label="Forest theme">🌲</button>
+          <button class="theme-btn" @click="setTheme('fire')" aria-label="Fire theme">🔥</button>
+          <button class="theme-btn" @click="setTheme('ashes')" aria-label="Ashes theme">💨</button>
+          <button class="theme-btn" @click="setTheme('chrome')" aria-label="Chrome theme">⚡</button>
+          <button class="theme-btn" @click="setTheme('galaxy')" aria-label="Galaxy theme">🪐</button>
+          <button class="theme-btn" @click="setTheme('darth')" aria-label="Darth theme">🎭</button>
         </div>
         <div class="button-row">
-          <button class="tool-btn" @click="exportBoard" title="Export">💾 Save</button>
-          <button class="tool-btn" @click="triggerImport" title="Import">📥 Load</button>
-          <button class="tool-btn" @click="toggleArchive" title="Archive">📦 Archive</button>
+          <button class="tool-btn" @click="exportBoard" aria-label="Export board">💾 Save</button>
+          <button class="tool-btn" @click="triggerImport" aria-label="Import board">📥 Load</button>
+          <button class="tool-btn" @click="toggleArchive" aria-label="Toggle archive view">📦 Archive</button>
           <input type="file" id="importFile" @change="importBoard" style="display:none" accept=".json" />
         </div>
       </div>
@@ -357,7 +367,7 @@
       <div class="sticky-lanes">
         <div class="sticky-lane-header" :class="'lane-' + lane.id" v-for="lane in filteredLanes" :key="lane.id">
           {{ lane.title }}
-          <button class="header-add-btn" @click="openAddCard(lane.id)" title="Add card">+</button>
+          <button class="header-add-btn" @click="openAddCard(lane.id)" aria-label="Add card to this lane">+ Add Card</button>
         </div>
       </div>
     </div>
@@ -367,7 +377,7 @@
           <div class="card" v-for="card in lane.cards" :key="card.id" :data-id="card.id" @click="editCard(card)">
             <div class="card-code" v-if="card.code">{{ card.code }}</div>
             <div class="card-title">{{ card.title }}</div>
-            <button class="card-delete" @click.stop="deleteCard(card.id)" title="Delete">✕</button>
+            <button class="card-delete" @click.stop="deleteCard(card.id)" aria-label="Delete card">✕</button>
             <div class="card-desc" v-if="card.description">{{ card.description }}</div>
             <div class="card-assigned" v-if="card.assigned_to">👤 {{ card.assigned_to }}</div>
             <div class="card-subtasks" v-if="card.subtasks?.length">
@@ -419,7 +429,7 @@
         <h2>{{ editingCard ? 'Edit Card' : 'New Card' }}</h2>
         <div class="form-group">
           <label>Title</label>
-          <input v-model="form.title" placeholder="Task name" />
+          <input v-model="form.title" placeholder="Task name" class="title-input" />
         </div>
         <div class="form-group">
           <label>Description</label>
@@ -429,7 +439,7 @@
           <label>Code (4 letters)</label>
           <div class="code-input-row">
             <input v-model="form.code" placeholder="FROG" maxlength="4" class="code-field" style="text-transform: uppercase" />
-            <button type="button" class="code-regen-btn" @click="async () => form.code = await generateNewCode()" title="Generate new code">🔄</button>
+            <button type="button" class="code-regen-btn" @click="regenerateCode()" title="Generate new code">🔄</button>
           </div>
         </div>
         <div class="form-group">
@@ -452,13 +462,16 @@
         </div>
         <div class="form-group">
           <label>Tags (comma separated)</label>
-          <input v-model="form.tags" placeholder="e.g. bug, feature, urgent" />
+          <input v-model="form.tags" placeholder="e.g. bug, feature, urgent" list="tag-suggestions" autocomplete="off" />
+          <datalist id="tag-suggestions">
+            <option v-for="tag in filteredTags" :value="tag" />
+          </datalist>
         </div>
         
         <!-- Subtasks Section -->
-        <div class="subtasks" v-if="editingCard">
+        <div class="subtasks" v-if="editingCard || form.title">
           <label>Subtasks</label>
-          <div class="subtask" v-for="st in editingCard.subtasks" :key="st.id">
+          <div class="subtask" v-for="st in (editingCard && editingCard.subtasks) || []" :key="st.id">
             <input type="checkbox" :checked="st.done" @change="toggleSubtask(st)" />
             <span class="subtask-title" :class="{ done: st.done }">{{ st.title }}</span>
             <span class="subtask-delete" @click="deleteSubtask(st)">&times;</span>
@@ -491,17 +504,9 @@
     const { createApp, ref, reactive, computed, onMounted, nextTick } = Vue;
     const config = window.kanbanConfig || {};
 
-    const themes = {
-      purple: { bg: 'linear-gradient(135deg, #475569 0%, #6366f1 50%, #818cf8 100%)', tagline: '#ffffff', header: 'rgba(99, 102, 241, 0.15)', glow: '99, 102, 241', modal: 'hsl(250 60% 98%)', modalText: 'hsl(222 84% 4%)', modalBorder: 'hsl(214 32% 91%)' },
-      ocean: { bg: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%)', tagline: '#ffffff', header: 'rgba(30, 60, 114, 0.2)', glow: '30, 60, 114', modal: 'hsl(212 76% 53%)', modalText: 'hsl(0 0% 100%)', modalBorder: 'hsl(212 56% 46%)' },
-      sunset: { bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', tagline: '#ffffff', header: 'rgba(250, 112, 154, 0.15)', glow: '250, 112, 154', modal: 'hsl(350 82% 71%)', modalText: 'hsl(0 0% 100%)', modalBorder: 'hsl(350 75% 57%)' },
-      forest: { bg: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)', tagline: '#ffffff', header: 'rgba(19, 78, 94, 0.2)', glow: '19, 78, 94', modal: 'hsl(168 56% 39%)', modalText: 'hsl(0 0% 100%)', modalBorder: 'hsl(168 50% 29%)' },
-      fire: { bg: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)', tagline: '#ffffff', header: 'rgba(241, 39, 17, 0.15)', glow: '241, 39, 17', modal: 'hsl(14 90% 53%)', modalText: 'hsl(0 0% 100%)', modalBorder: 'hsl(14 87% 41%)' },
-      ashes: { bg: 'linear-gradient(135deg, #3c3c3c 0%, #8a8a8a 100%)', tagline: '#ffffff', header: 'rgba(60, 60, 60, 0.2)', glow: '60, 60, 60', modal: 'hsl(0 0% 27%)', modalText: 'hsl(0 0% 100%)', modalBorder: 'hsl(0 0% 41%)' },
-      chrome: { bg: 'linear-gradient(135deg, #8B0000 0%, #b22222 25%, #dc143c 50%, #ff4500 75%, #8B0000 100%)', tagline: '#ffffff', header: 'rgba(139, 0, 0, 0.4)', glow: '255, 69, 0', modal: 'hsl(350 82% 53%)', modalText: 'hsl(0 0% 100%)', modalBorder: 'hsl(14 87% 41%)' },
-      darth: { bg: 'linear-gradient(135deg, #1a0a0a 0%, #2d0a0a 25%, #0f0a0a 50%, #1a0a0a 75%, #2d0a0a 100%)', tagline: '#ffffff', header: 'rgba(40, 10, 10, 0.85)', glow: '180, 30, 30', cardBg: 'rgba(30, 20, 20, 0.9)', text: '#e0d0d0', modal: 'hsl(0 40% 8%)', modalText: 'hsl(0 20% 80%)', modalBorder: 'hsl(0 30% 20%)' },
-      galaxy: { bg: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)', tagline: '#ffffff', header: 'rgba(15, 12, 41, 0.6)', glow: '138, 43, 226', cardBg: 'rgba(40, 20, 80, 0.85)', text: '#e0d4ff', modal: 'hsl(250 50% 20%)', modalText: 'hsl(260 80% 80%)', modalBorder: 'hsl(250 40% 30%)' }
-    };
+    // Use themes from loaded constants.js (avoiding duplication)
+    const themes = window.NIXBOARD_CONSTANTS?.THEMES || {};
+    const colors = window.NIXBOARD_CONSTANTS?.COLORS || ['#3b82f6'];
 
     // Galaxy warp stars animation
     const addGalaxyStars = () => {
@@ -535,13 +540,6 @@
       document.body.insertBefore(stars, document.body.firstChild);
     };
 
-    // Card code words - loaded from API endpoint /api/generate-code
-    // (stored only in backend for DRY principle)
-    const generateNewCode = async () => {
-      const data = await api('/api/generate-code');
-      return data.code;
-    };
-    
     // Format due date for display
     const formatDue = (dateStr) => {
       if (!dateStr) return '';
@@ -601,6 +599,9 @@
         const archivedCards = ref([]);
         const editingCard = ref(null);
         const form = reactive({ title: '', description: '', color: '#3b82f6', lane_id: '', code: '', assigned_to: '', tags: '', due_date: '', archived: 0 });
+        // Generate new card code
+        const generateNewCode = async () => { const data = await api('/api/generate-code'); return data.code; };
+        const regenerateCode = async () => { form.code = await generateNewCode(); };
         const newSubtask = ref('');
         const filterText = ref('');
         
@@ -628,7 +629,34 @@
           }, 0);
         });
         
-        const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
+        // Available tags for autocomplete
+        const availableTags = ref([]);
+        
+        // Filter tags based on last segment (after comma)
+        const filteredTags = computed(() => {
+          const input = form.tags || '';
+          const lastSegment = input.split(',').pop().trim().toLowerCase();
+          if (!lastSegment) return availableTags.value.slice(0, 10);
+          return availableTags.value
+            .filter(t => t.toLowerCase().includes(lastSegment))
+            .slice(0, 10);
+        });
+        
+        const extractTags = () => {
+          const allTags = [];
+          if (!board.lanes) return;
+          board.lanes.forEach(lane => {
+            lane.cards.forEach(card => {
+              if (card.tags) {
+                card.tags.split(',').forEach(tag => {
+                  const t = tag.trim();
+                  if (t) allTags.push(t);
+                });
+              }
+            });
+          });
+          availableTags.value = [...new Set(allTags)].sort();
+        };
 
         // Toggle archive view
         const toggleArchive = async () => {
@@ -675,6 +703,7 @@
           const data = await api('/api/boards/1');
           if (data.title) boardTitle.value = data.title;
           board.lanes = data.lanes || [];
+          extractTags();
           await nextTick();
           initSortables();
         };
@@ -762,21 +791,38 @@
         const closeModal = () => { showModal.value = false; };
 
         const saveCard = async () => {
-          if (!form.title.trim()) return;
+          if (!form.title.trim()) {
+            document.querySelector('.modal .title-input')?.classList.add('error');
+            return;
+          }
+          // Remove any existing error class
+          document.querySelector('.modal .title-input')?.classList.remove('error');
           
           if (editingCard.value) {
+            // Optimistic update: update local state immediately
+            const cardIndex = board.lanes.findIndex(l => l.cards?.some(c => c.id === editingCard.value.id));
+            if (cardIndex !== -1) {
+              const card = board.lanes[cardIndex].cards.find(c => c.id === editingCard.value.id);
+              if (card) {
+                Object.assign(card, form);
+                card.color = form.color;
+              }
+            }
             await api(`/api/cards/${editingCard.value.id}`, {
               method: 'PATCH',
               body: JSON.stringify(form)
             });
           } else {
+            // Create the card via API
             await api('/api/cards', {
               method: 'POST',
               body: JSON.stringify(form)
             });
+            // Reload board to get complete card data including description, etc.
+            await loadBoard();
           }
           closeModal();
-          loadBoard();
+          // Don't reload - local state is already updated
         };
 
         const deleteCard = async (cardId) => {
@@ -790,17 +836,33 @@
             return;
           }
           if (!confirm('Delete this card?')) return;
+          
+          // Optimistic update: remove from local state immediately
+          board.lanes.forEach(lane => {
+            if (lane.cards) {
+              lane.cards = lane.cards.filter(c => c.id !== id);
+            }
+          });
+          
           await api(`/api/cards/${id}`, { method: 'DELETE' });
           closeModal();
-          loadBoard();
+          // Don't reload - local state is already updated
         };
 
         const archiveCard = async () => {
           if (!editingCard.value?.id) return;
           if (!confirm('Archive this card?')) return;
+          
+          // Optimistic update: remove from local state immediately
+          board.lanes.forEach(lane => {
+            if (lane.cards) {
+              lane.cards = lane.cards.filter(c => c.id !== editingCard.value.id);
+            }
+          });
+          
           await api(`/api/cards/${editingCard.value.id}/archive`, { method: 'POST' });
           closeModal();
-          loadBoard();
+          // Don't reload - local state is already updated
         };
 
         const unarchiveCard = async () => {
@@ -923,10 +985,11 @@
           document.documentElement.style.setProperty('--modal-bg', themes[currentTheme.value].modal);
           document.documentElement.style.setProperty('--modal-text', themes[currentTheme.value].modalText || '#fff');
           document.documentElement.style.setProperty('--modal-border', themes[currentTheme.value].modalBorder || '#e2e8f0');
-          // ESC key to close archive
+          // ESC key to close archive or modal
           document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && showArchive.value) {
-              toggleArchive();
+            if (e.key === 'Escape') {
+              if (showArchive.value) toggleArchive();
+              if (showModal.value) closeModal();
             }
           });
           // Apply saved theme tagline color
@@ -949,7 +1012,7 @@
           if (currentTheme.value === 'chrome') setTimeout(triggerDelorean, 2000);
         });
 
-        return { board, loading, showDelorean, showDeloreanFlash, boardTitle, editingTitle, newTitle, titleInput, showModal, showArchive, archivedCards, editingCard, form, newSubtask, filterText, filteredLanes, hiddenCount, colors, generateNewCode, formatDue, formatDate, getDueClass, openAddCard, editCard, closeModal, saveCard, deleteCard, archiveCard, unarchiveCard, addSubtask, toggleSubtask, deleteSubtask, startEditTitle, saveTitle, setTheme, exportBoard, triggerImport, importBoard, toggleArchive, restoreCard, deleteArchivedCard };
+        return { board, loading, showDelorean, showDeloreanFlash, boardTitle, editingTitle, newTitle, titleInput, showModal, showArchive, archivedCards, editingCard, form, newSubtask, filterText, filteredLanes, hiddenCount, colors, availableTags, filteredTags, generateNewCode, regenerateCode, formatDue, formatDate, getDueClass, openAddCard, editCard, closeModal, saveCard, deleteCard, archiveCard, unarchiveCard, addSubtask, toggleSubtask, deleteSubtask, startEditTitle, saveTitle, setTheme, exportBoard, triggerImport, importBoard, toggleArchive, restoreCard, deleteArchivedCard };
       }
     }).mount('#app');
   </script>
